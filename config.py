@@ -23,6 +23,6 @@ MAIL_ASCII_ATTACHMENTS = False
 MAIL_TEMPLATE_FOLDER = 'mails'
 
 MAIL_SENDERS = {
-    'admin': ('Admin Team', 'admin@heasygame.com'),
-    'support': ('Support Team', 'support@heasygame.com')
+    'admin': ('Admin Team', 'admin@ctf.framgia.vn'),
+    'support': ('Support Team', 'support@ctf.framgia.vn')
 }

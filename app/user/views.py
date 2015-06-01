@@ -5,9 +5,9 @@ from flask_login import login_user, logout_user, login_required
 from flask_admin.contrib.sqla import ModelView
 
 from app import app, db
-from app.user.forms import LoginForm, SignupForm, SendForgotPasswordForm
+from app.user.forms import LoginForm, SignupForm, SendForgotPasswordForm, ResetPasswordForm
 from app.user.models import User
-from app.common.utils import generate_token
+from app.common.utils import generate_token, send_email
 
 
 user_module = Blueprint('user', __name__)
@@ -22,7 +22,8 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return render_template('confirm_mail_sent.html', user=new_user)
+        login_user(new_user)
+        return redirect(request.args.get('next') or url_for('index'))
 
     return render_template('user/signup.html', form=form)
 
@@ -35,8 +36,13 @@ def login():
     if form.validate_on_submit():
         # login and validate the user...
         user = User.query.filter_by(email=form.email.data).first()
+        user.update_login_info(request.environ['REMOTE_ADDR'])
+        db.session.add(user)
+        db.session.commit()
+
         login_user(user)
         flash('Logged in successfully.')
+
         return redirect(request.args.get('next') or url_for('index'))
     return render_template('user/login.html', form=form)
 
@@ -44,71 +50,36 @@ def login():
 @user_module.route('/logout')
 @login_required
 def logout():
+    g.user.log_last_login(request.environ['REMOTE_ADDR'])
+    db.session.add(g.user)
+    db.session.commit()
     logout_user()
+
     return redirect(url_for('index'))
-
-
-@user_module.route('/profile', methods=['GET', 'POST'])
-@user_module.route('/profile/<int:user_id>', methods=['GET', 'POST'])
-@login_required
-def profile(user_id=None):
-    if g.user is not None and g.user.is_authenticated():
-        if user_id is None:
-            return render_template('user/profile.html', user=g.user)
-        else:
-            user = User.query.get(user_id)
-            if user:
-                return render_template('user/profile.html', user=user)
-            else:
-                return redirect(url_for('index'))
-    else:
-        if user_id is None:
-            return redirect(url_for('index'))
-        else:
-            user = User.query.get(user_id)
-            return render_template('user/profile.html', user=user)
-
-
-@app.route('/profile/edit', methods=['GET', 'POST'])
-@login_required
-def edit_profile():
-    model = User.query.get(g.user.id)
-    form = UserForm(obj=model)
-
-    if form.validate_on_submit():
-        form.populate_obj(model)
-        db.session.add(model)
-        db.session.commit()
-        flash('Profile updated', category='success')
-        return redirect(url_for('profile'))
-
-    return render_template('user/edit_profile.html', user=g.user, form=form)
 
 
 @user_module.route('/password/forgot', methods=['GET', 'POST'])
 def forgot_password():
     form = SendForgotPasswordForm()
-    '''
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        user_forgot_password = UserForgotPassword.query.filter_by(user_id=user.id).first()
-        if not user_forgot_password:
-            user_forgot_password = UserForgotPassword(user)
-        else:
-            user_forgot_password.refresh()
-        db.session.add(user_forgot_password)
-        db.session.commit()
 
-        token = user_forgot_password.token.encode('base64').strip().replace('=', '_')
+        token = user.reset_password_token.encode('base64').strip().replace('=', '_')
         send_email(
-            'Heasygame - Reset Password',
+            'Framgia Code Contest - Reset Password',
             app.config['MAIL_SENDERS']['admin'],
             [user.email],
             'reset_password',
             dict(token=token)
         )
+
+        user.log_sent_password_token()
+        db.session.add(user)
+        db.session.commit()
+
         return render_template('user/reset_password_sent.html', user=user)
-    '''
+
     return render_template('user/forgot_password.html', form=form)
 
 
@@ -118,16 +89,26 @@ def reset_password(token):
         token = token.replace('_', '=').decode('base64')
     except Exception, e:
         abort(404)
-    '''
-    user_forgot_password = UserForgotPassword.query.filter_by(token=token).get_or_404()
+
+    user = User.query.filter_by(reset_password_token=token).first()
+    if not user:
+        abort(404)
+    elif not user.is_valid_token():
+        user.refresh_password_token()
+        db.session.add(user)
+        db.session.commit()
+        flash('Your token is expired ! Please request a new one.')
+
+        return redirect(url_for('user.forgot_password'))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user_forgot_password.user.set_password(form.new_password.data)
-        user_forgot_password.refresh()
-        db.session.add(user_forgot_password)
+        user.set_password(form.new_password.data)
+        user.refresh_password_token()
+        db.session.add(user)
         db.session.commit()
         flash('Password changed successfully.')
+
         return redirect(url_for('user.login'))
-    '''
-    #return render_template('user/reset_password.html', form=form)
+
+    return render_template('user/reset_password.html', form=form)

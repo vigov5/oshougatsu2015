@@ -20,12 +20,13 @@ class User(db.Model):
     current_sign_in_ip = db.Column(db.String(255), default='')
     last_sign_in_ip = db.Column(db.String(255), default='')
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    updated_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     locale = db.Column(db.SmallInteger, default=USER.LOCALE_VN)
 
     def __init__(self, email, password):
         self.email = email.lower()
         self.set_password(password)
+        self.reset_password_token = generate_token()
         self.updated_at = datetime.datetime.now()
 
     def set_password(self, password):
@@ -47,7 +48,25 @@ class User(db.Model):
         return unicode(self.id)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.email
 
     def is_admin(self):
         return True
+
+    def update_login_info(self, remote_ip):
+        self.sign_in_count += 1
+        self.current_sign_in_at = datetime.datetime.now()
+        self.current_sign_in_ip = remote_ip
+
+    def log_last_login(self, remote_ip):
+        self.last_sign_in_at = datetime.datetime.now()
+        self.last_sign_in_ip = remote_ip
+
+    def log_sent_password_token(self):
+        self.reset_password_sent_at = datetime.datetime.now()
+
+    def refresh_password_token(self):
+        self.reset_password_token = generate_token()
+
+    def is_valid_token(self):
+        return self.reset_password_sent_at + datetime.timedelta(minutes=30) > datetime.datetime.now()
