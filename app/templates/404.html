@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-3">
+    <img class="avatar img-circle" src="{{ url_for('static', filename='img/logo.png') }}" />
+    <h4 class="user-name">Heasygame</h4>
+  </div>
+  <div class="col-lg-9">
+    <h4>Page not found! Why???</h4>
+    <h4>Page not found! Why???</h4>
+    <h4>Page not found! Why???</h4>
+    <h4>Page not found! Why???</h4>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function(){
+    $(".col-lg-3").height($(".row").height());
+  });
+</script>
+{% endblock %}

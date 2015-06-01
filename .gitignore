@@ -54,5 +54,5 @@ docs/_build/
 
 # virtual env
 venv/
-tmp/
 .idea/
+.DS_Store

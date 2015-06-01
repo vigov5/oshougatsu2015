@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+{% for message in form.email.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.password.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+{% for message in form.confirm.errors %}
+<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+<form class="form-signup" role="form" action="" method="POST">
+    <h2 class="form-signup-heading">Sign up</h2>
+    <input name="email" type="email" class="form-control" placeholder="Email address" required>
+    <input name="password" type="password" class="form-control" placeholder="Password" required>
+    <input name="confirm" type="password" class="form-control" placeholder="Password Confirm" required>
+    {{ form.hidden_tag() }}
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+</form>
+{% endblock %}

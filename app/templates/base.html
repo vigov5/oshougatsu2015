@@ -1,65 +1,62 @@
 <html>
   <head>
     {% if title %}
-    <title>{{title}} - Heasygame</title>
+    <title>{{title}} - Framgia Code Contest</title>
     {% else %}
-    <title>Heasygame</title>
+    <title>Framgia Code Contest</title>
     {% endif %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Heasygame Team">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon"/>
+    <meta name="author" content="Framgia Code Contest Team">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon"/>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/flat-ui.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/drunken-parrot.css') }}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Latest compiled and minified JavaScript -->
-    <script src="{{ url_for('static', filename='js/vendor/jquery-1.11.0.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/flat-ui.min.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/checkbox.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/radio.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-switch.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/toolbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/application.js') }}"></script>
     {% block css %}{% endblock %}
     {% block js %}{% endblock %}
   </head>
   <body>
     <!-- Fixed navbar -->
-    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="{{ url_for('index') }}">Heasygame</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}">Framgia Code Contest</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
+            {%- for item in current_menu.children %}
+              <li {% if item.active %}class="active"{% endif %}><a href="{{ item.url }}">{{ item.text }}</a></li>
+            {% endfor -%}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if g.user.is_authenticated() %}
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.name }} <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ g.user.email }} <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="{{ url_for('profile')}}">Profile</a></li>
-                <li class="divider"></li>
-                <li><a href="{{ url_for('logout') }}">Log out</a></li>
+                <li><a href="{{ url_for('user.logout') }}">Log out</a></li>
               </ul>
             </li>
             {% else %}
-            <li><a href="{{ url_for('login') }}">Log in</a></li>
+            <li><a href="{{ url_for('user.signup') }}">Sign up</a></li>
+            <li><a href="{{ url_for('user.login') }}">Log in</a></li>
             {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div><!-- Fixed navbar -->
-    <div class="main-container">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-warning alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+    <div class="main-container container">
     {% block content %}{% endblock %}
     </div>
   </body>

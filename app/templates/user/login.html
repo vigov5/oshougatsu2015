@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+{% for message in form.email.errors %}
+<div class="alert alert-danger alert-dismissible">{{ message }}</div>
+{% endfor %}
+{% for message in form.password.errors %}
+<div class="alert alert-danger alert-dismissable">{{ message }}</div>
+{% endfor %}
+
+<form class="form-signin" role="form" action="" method="POST">
+    <h2 class="form-signin-heading">Login</h2>
+    <input name="email" type="text" class="form-control" placeholder="Email" required autofocus>
+    <input name="password" type="password" class="form-control" placeholder="Password" required>
+    {{ form.hidden_tag() }}
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+</form>
+<div class="can-not-login">
+    <p><a href="{{ url_for('user.forgot_password') }}">Forgot Password?</a></p>
+</div>
+{% endblock %}

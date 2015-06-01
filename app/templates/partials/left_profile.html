@@ -1,0 +1,14 @@
+{% if not user %}
+   {% set user = g.user %}
+{% endif %}
+<div class="col-lg-3">
+  <img class="avatar img-circle" src="{{ user.avatar.first().get_url() }}" />
+  <h4 class="user-name"><a href="{{ url_for('profile')}}">{{ user.name }}</a></h4>
+  <img class="hgp" src="{{ url_for('static', filename='img/logo.png') }}" />
+  <p>3650</p>
+  {% if g.user and request.path == url_for('profile') %}
+  <a class="btn btn-lg btn-primary btn-block" href="{{ url_for('avatar_upload') }}">Change avatar</a>
+  <a class="btn btn-lg btn-primary btn-block" href="{{ url_for('edit_profile') }}">Change display name</a>
+  {% endif %}
+  <hr>
+</div>
