@@ -1,3 +1,3 @@
-heasygame
+Famgia Code Contest site clone
 ====
-Game site made by TrongTB and TienNA
+Made with Flask
