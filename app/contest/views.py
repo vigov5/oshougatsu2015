@@ -29,6 +29,8 @@ def scores(contest_id):
 
 class ContestView(ModelView):
 
+    column_default_sort = ('id', True)
+
     # Override displayed fields
     column_list = ('name', 'description', 'start_at', 'end_at', 'result_announced_at')
     column_filters = ('name', 'description', 'start_at', 'end_at', 'result_announced_at')

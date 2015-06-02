@@ -24,6 +24,7 @@ bcrypt = Bcrypt(app)
 from app.common import views
 from app.user.views import user_module, UserView
 from app.contest.views import contest_module, ContestView
+from app.problem.views import ProblemView
 
 app.register_blueprint(user_module, url_prefix='/user')
 app.register_blueprint(contest_module, url_prefix='/contest')
@@ -31,3 +32,4 @@ app.register_blueprint(contest_module, url_prefix='/contest')
 admin = Admin(app, url='/admin')
 admin.add_view(UserView(db.session, name='Users'))
 admin.add_view(ContestView(db.session, name='Contests'))
+admin.add_view(ProblemView(db.session, name='Problems'))

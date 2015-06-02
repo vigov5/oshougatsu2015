@@ -28,3 +28,6 @@ class Contest(db.Model):
 
     def is_started(self):
         return datetime.datetime.now() > self.start_at
+
+    def __str__(self):
+        return self.name
