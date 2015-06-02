@@ -23,3 +23,15 @@ LANG_EXTENSIONS = {
 	LANG_JAVA: '.java',
 	LANG_PYTHON: '.py',
 }
+
+# state
+STATE_QUEUED = 'queued'
+STATE_FINISHED = 'finished'
+
+# result status
+RESULT_TIME_EXCEEDED = 'Limited time exceeded'
+RESULT_MEMORY_EXCEEDED = 'Limited memory exceeded'
+RESULT_COMPILE_ERROR = 'Compile Error'
+RESULT_RUNTIME_ERROR = 'Runtime Error'
+RESULT_WRONG_ANSWER = 'Wrong Answer'
+RESULT_ACCEPTED = 'Accepted'

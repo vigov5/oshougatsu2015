@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block content %}
+<h3>{{ contest.name }}</h3>
+<p>
+    <a class="btn btn-large btn-success" href="{{ url_for('contest.scores', contest_id=contest.id) }}">Contest scores</a>
+</p>
+<p>
+    <b>Description: </b>{{ contest.description }}
+    <br/>
+    <b>Start at: </b>{{ contest.start_at }}
+    <br/>
+    <b>End at: </b>{{ contest.end_at }}
+    <br/>
+    <b>Result announced at: </b>{{ contest.result_announced_at }}
+</p>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Rank</th>
+            <th>Starting point</th>
+            <th>Wrong answer decreased point</th>
+            <th>Slowly decreased interval (seconds)</th>
+            <th>Number of test cases</th>
+            <th>Limited time (ms)</th>
+            <th>Limited memory (KB)</th>
+            <th>Limited source size (bytes)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%- for problem in contest.problems -%}
+        <tr>
+            <td>
+                <a href="{{ url_for('contest.scores', contest_id=contest.id) }}">{{ problem.get_name(g.user) }}</a>
+            </td>
+            <td>
+                {{ problem.get_rank_text() }}
+            </td>
+            <td>
+                {{ problem.starting_point }}
+            </td>
+            <td>
+                {{ problem.wrong_answer_decreased_point }}
+            </td>
+            <td>
+                {{ problem.slowly_decreased_interval }}
+            </td>
+            <td>
+                1
+            </td>
+            <td>
+                {{ problem.limited_time }}
+            </td>
+            <td>
+                {{ problem.limited_memory }}
+            </td>
+            <td>
+                {{ problem.limited_source_size }}
+            </td>
+        </tr>
+        {%- endfor -%}
+    </tbody>
+</table>
+</div>
+{% endblock %}

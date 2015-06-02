@@ -1,6 +1,7 @@
 import datetime
 
 from app import db
+from app.problem import constants as PROBLEM
 
 
 class Problem(db.Model):
@@ -23,3 +24,12 @@ class Problem(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
 
     submissions = db.relationship('Submission', backref='problem', lazy='dynamic')
+
+    def get_rank_text(self):
+        return PROBLEM.RANKS[self.rank]
+
+    def get_name(self, user):
+        if user and user.is_authenticated():
+            return self.name_vi if user.is_locale_vn() else self.name_en
+        else:
+            return self.name_en

@@ -7,9 +7,9 @@ RANK_D = 1
 RANK_E = 0
 
 RANKS = {
-	RANK_A: 'Rank A'
-	RANK_B: 'Rank B'
-	RANK_C: 'Rank C'
-	RANK_D: 'Rank D'
-	RANK_E: 'Rank E'
+	RANK_A: 'A',
+	RANK_B: 'B',
+	RANK_C: 'C',
+	RANK_D: 'D',
+	RANK_E: 'E'
 }

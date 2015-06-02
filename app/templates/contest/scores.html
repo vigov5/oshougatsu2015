@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block content %}
+<div class="row-fluid">
+    <div class="span12">
+        <p>
+            <h2>Contest scores</h2></p>
+        <a href="{{ url_for('contest.show', contest_id=contest.id) }}">Contest</a>
+        <table class="table table-bordered" id="contest-scores">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    {%- for problem in contest.problems -%}
+                    <th>{{ problem.get_name(g.user) }}</th>
+                    {%- endfor -%}
+                    <th>Total score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%- for email, points, total in summary -%}
+                <tr>
+                    <td>{{ email }}</td>
+                    {%- for problem in contest.problems -%}
+                    <td style="text-align:center;width:10%;">
+                    {% if points.has_key(problem.id) %}
+                        <center>
+                            <div>
+                                {% if points[problem.id] %}
+                                <button class="btn btn-block btn-success">{{ points[problem.id] }}</button>
+                                {% else %}
+                                <button class="btn btn-block btn-inverse">{{ points[problem.id] }}</button>
+                                {% endif %}
+                            </div>
+                        </center>
+                    {% endif %}
+                    </td>
+                    {%- endfor -%}
+                    <td>
+                      <center>
+                        <div>
+                          <button class="btn btn-block btn-danger">{{ total }}</button>
+                        </div>
+                      </center>
+                    </td>
+                </tr>
+                {%- endfor -%}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+{% endblock %}

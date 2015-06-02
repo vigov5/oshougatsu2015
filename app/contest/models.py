@@ -19,3 +19,12 @@ class Contest(db.Model):
 
     problems = db.relationship(Problem, backref='contest', lazy='dynamic')
     scores = db.relationship(UserScore, backref='contest', lazy='dynamic')
+
+    def submissions_count(self):
+        return sum(map(len, [problem.submissions.all() for problem in self.problems]))
+
+    def is_ended(self):
+        return datetime.datetime.now() > self.end_at
+
+    def is_started(self):
+        return datetime.datetime.now() > self.start_at

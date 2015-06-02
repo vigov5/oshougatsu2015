@@ -1,6 +1,7 @@
 import datetime
 
 from app import db
+from app.submission import constants as SUBMISSION
 
 
 class Submission(db.Model):
@@ -19,3 +20,27 @@ class Submission(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     failed_test_case_result = db.Column(db.String(255))
+
+    def is_queued(self):
+        return self.state == SUBMISSION.STATE_QUEUED
+
+    def is_finished(self):
+        return self.state == SUBMISSION.STATE_FINISHED
+
+    def is_time_exceeded(self):
+        return self.result_status == SUBMISSION.RESULT_TIME_EXCEEDED
+
+    def is_memory_exceeded(self):
+        return self.result_status == SUBMISSION.RESULT_MEMORY_EXCEEDED
+
+    def is_compile_error(self):
+        return self.result_status == SUBMISSION.RESULT_COMPILE_ERROR
+
+    def is_runtime_error(self):
+        return self.result_status == SUBMISSION.RESULT_RUNTIME_ERROR
+
+    def is_wrong_answer(self):
+        return self.result_status == SUBMISSION.RESULT_WRONG_ANSWER
+
+    def is_accepted(self):
+        return self.result_status == SUBMISSION.RESULT_ACCEPTED

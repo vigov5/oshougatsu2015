@@ -1,5 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
+<div class="row" style="min-height: 600px; width: 90%;">
+<h1 style="text-align: center"><img alt="Terminal" src="{{ url_for('static', filename='images/terminal.png') }}" width="100px"> All Contests</h1>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Name (Number of submissons)</th>
+      <th>Description</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%- for contest in contests -%}
+    <tr>
+      <td>
+        <a href="{{ url_for('contest.show', contest_id=contest.id) }}">{{ contest.name }} <span class="badge">{{ contest.submissions_count() }}</span></a>
+        <a class="btn btn-success btn-xs" href="{{ url_for('contest.scores', contest_id=contest.id) }}" style="float: right">Contest scores</a>
+      </td>
+      <td>{{ contest.description }}</td>
+      <td>
+      {% if contest.is_ended() %}
+      <span class="label label-default">::: ENDED :::</span>
+      {% else %}
+      <span class="label label-info">!!! ON AIR !!!</span>
+      {% endif %}
+      </td>
+    </tr>
+    {%- endfor -%}
+  </tbody>
+</table>
 </div>
 {% endblock %}

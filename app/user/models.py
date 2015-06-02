@@ -75,3 +75,9 @@ class User(db.Model):
 
     def is_valid_token(self):
         return self.reset_password_sent_at + datetime.timedelta(minutes=USER.TOKEN_EXPIRE_MINUTES) > datetime.datetime.now()
+
+    def is_locale_vn(self):
+        return self.locale == USER.LOCALE_VN
+
+    def is_locale_en(self):
+        return self.locale == USER.LOCALE_EN
