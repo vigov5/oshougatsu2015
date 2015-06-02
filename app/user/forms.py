@@ -1,7 +1,4 @@
-from PIL import Image
-
 from flask_wtf import Form
-from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import TextField, SubmitField, validators, PasswordField
 from wtforms_alchemy import model_form_factory
 
@@ -50,7 +47,7 @@ class LoginForm(Form):
         validators.Required('Please enter a password.'),
         validators.Length(min=6, message='Passwords is at least 6 characters.'),
     ])
-    submit = SubmitField('Sign In')
+    submit = SubmitField('Login In')
 
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)

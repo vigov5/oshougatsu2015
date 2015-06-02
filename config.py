@@ -1,4 +1,5 @@
 import os
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_DATABASE_URI = 'mysql://fcc_admin:fcc_admin@localhost/fcc'
@@ -26,3 +27,9 @@ MAIL_SENDERS = {
     'admin': ('Admin Team', 'admin@ctf.framgia.vn'),
     'support': ('Support Team', 'support@ctf.framgia.vn')
 }
+
+ADMINS = [
+	'nguyen.anh.tien@framgia.com',
+	'nguyen.dang.huy@framgia.com',
+	'le.hoai.phuong@framgia.com'
+]

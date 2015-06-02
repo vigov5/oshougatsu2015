@@ -23,6 +23,8 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     locale = db.Column(db.SmallInteger, default=USER.LOCALE_VN)
 
+    submissions = db.relationship('Submission', backref='user', lazy='dynamic')
+
     def __init__(self, email, password):
         self.email = email.lower()
         self.set_password(password)
@@ -51,7 +53,7 @@ class User(db.Model):
         return '<User %r>' % self.email
 
     def is_admin(self):
-        return True
+        return self.email in app.config['ADMINS']
 
     def update_login_info(self, remote_ip):
         self.sign_in_count += 1
@@ -69,4 +71,4 @@ class User(db.Model):
         self.reset_password_token = generate_token()
 
     def is_valid_token(self):
-        return self.reset_password_sent_at + datetime.timedelta(minutes=30) > datetime.datetime.now()
+        return self.reset_password_sent_at + datetime.timedelta(minutes=USER.TOKEN_EXPIRE_MINUTES) > datetime.datetime.now()

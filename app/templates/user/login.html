@@ -6,16 +6,25 @@
 {% for message in form.password.errors %}
 <div class="alert alert-danger alert-dismissable">{{ message }}</div>
 {% endfor %}
-
-<form class="form-signin" role="form" action="" method="POST">
-    <h2 class="form-signin-heading">Login</h2>
-    <input name="email" type="text" class="form-control" placeholder="Email" required autofocus>
-    <input name="password" type="password" class="form-control" placeholder="Password" required>
-    {{ form.hidden_tag() }}
-    <br>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-</form>
-<div class="can-not-login">
-    <p><a href="{{ url_for('user.forgot_password') }}">Forgot Password?</a></p>
+<div class="col-md-4 col-md-offset-4 col-sm-6">
+  <div class="tile tile-login">
+    <form class="form-signin" role="form" action="" method="POST">
+      <div class="input-icon">
+        <span class="fa-envelope fa"></span>
+        <input name="email" type="text" class="form-control" placeholder="Email" required autofocus>
+      </div>
+      <div class="input-icon">
+        <span class="fa-lock fa"></span>
+        <input name="password" type="password" class="form-control" placeholder="Password" required>
+      </div>
+      {{ form.hidden_tag() }}
+      <button class="btn btn-block btn-primary btn-embossed" type="submit">Log in</button>
+    </form>
+    <div class="login-action">
+      <div class="col-md-12 ol-xs-12">
+        <a href="{{ url_for('user.forgot_password') }}">Forget Password ?</a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
