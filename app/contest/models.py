@@ -1,6 +1,8 @@
 import datetime
 
 from app import db
+from app.problem.models import Problem
+from app.user_score.models import UserScore
 
 
 class Contest(db.Model):
@@ -15,5 +17,5 @@ class Contest(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
 
-    problems = db.relationship('Problem', backref='contest', lazy='dynamic')
-    scores = db.relationship('UserScore', backref='contest', lazy='dynamic')
+    problems = db.relationship(Problem, backref='contest', lazy='dynamic')
+    scores = db.relationship(UserScore, backref='contest', lazy='dynamic')

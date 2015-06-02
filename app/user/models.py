@@ -3,6 +3,8 @@ import datetime
 from app import app, db, bcrypt
 from app.common.utils import generate_token
 from app.user import constants as USER
+from app.submission.models import Submission
+from app.user_score.models import UserScore
 
 
 class User(db.Model):
@@ -23,8 +25,8 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     locale = db.Column(db.SmallInteger, default=USER.LOCALE_VN)
 
-    submissions = db.relationship('Submission', backref='user', lazy='dynamic')
-    scores = db.relationship('UserScore', backref='user', lazy='dynamic')
+    submissions = db.relationship(Submission, backref='user', lazy='dynamic')
+    scores = db.relationship(UserScore, backref='user', lazy='dynamic')
 
     def __init__(self, email, password):
         self.email = email.lower()

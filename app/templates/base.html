@@ -39,6 +39,9 @@
             {%- for item in current_menu.children %}
               <li {% if item.active %}class="active"{% endif %}><a href="{{ item.url }}">{{ item.text }}</a></li>
             {% endfor -%}
+            {% if g.user.is_authenticated() and g.user.is_admin() %}
+              <li><a href="{{ url_for('admin.index') }}">Admin</a></li>
+            {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if g.user.is_authenticated() %}

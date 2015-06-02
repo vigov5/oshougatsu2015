@@ -7,6 +7,7 @@ from flask_admin.contrib.sqla import ModelView
 from app import app, db
 from app.user.forms import LoginForm, SignupForm, SendForgotPasswordForm, ResetPasswordForm
 from app.user.models import User
+from app.user import constants as USER
 from app.common.utils import generate_token, send_email
 
 
@@ -18,7 +19,7 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         new_user = User(form.email.data, form.password.data)
-
+        user.update_login_info(request.environ['REMOTE_ADDR'])
         db.session.add(new_user)
         db.session.commit()
 
@@ -112,3 +113,29 @@ def reset_password(token):
         return redirect(url_for('user.login'))
 
     return render_template('user/reset_password.html', form=form)
+
+
+class UserView(ModelView):
+    # Disable model creation
+    can_create = False
+
+    # Override displayed fields
+    column_list = ('id', 'email', 'current_sign_in_at', 'current_sign_in_ip', 'last_sign_in_at', 'last_sign_in_ip', 'locale')
+    column_filters = ('id', 'email', 'current_sign_in_at', 'current_sign_in_ip', 'last_sign_in_at', 'last_sign_in_ip', 'locale')
+
+    form_excluded_columns = ('encrypted_password', 'submissions', 'scores')
+
+    column_choices = {
+        'locale': USER.LOCALES.items()
+    }
+
+    form_choices = {
+        'locale': [(str(k), v) for k,v in USER.LOCALES.items()]
+    }
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(UserView, self).__init__(User, session, **kwargs)
+
+    def is_accessible(self):
+        return g.user.is_authenticated() and g.user.is_admin()
