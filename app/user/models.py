@@ -24,6 +24,7 @@ class User(db.Model):
     locale = db.Column(db.SmallInteger, default=USER.LOCALE_VN)
 
     submissions = db.relationship('Submission', backref='user', lazy='dynamic')
+    scores = db.relationship('UserScore', backref='user', lazy='dynamic')
 
     def __init__(self, email, password):
         self.email = email.lower()
