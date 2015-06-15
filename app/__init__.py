@@ -5,6 +5,20 @@ from flask_mail import Mail
 from flask_admin import Admin
 from flask.ext.bcrypt import Bcrypt
 import flask_menu as menu
+from celery import Celery
+from flaskext.uploads import UploadSet, configure_uploads, patch_request_class
+
+def make_celery(app):
+    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
+        abstract = True
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -19,15 +33,22 @@ lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'login'
 
+celery = make_celery(app)
+
 bcrypt = Bcrypt(app)
+
+code_upload_set = UploadSet('code', extensions=app.config['UPLOADED_FILES_ALLOW'])
+configure_uploads(app, code_upload_set)
+patch_request_class(app, 2 * 1024 * 1024) # 2MB
 
 from app.common import views
 from app.user.views import user_module, UserView
 from app.contest.views import contest_module, ContestView
-from app.problem.views import ProblemView
+from app.problem.views import problem_module, ProblemView
 
 app.register_blueprint(user_module, url_prefix='/user')
 app.register_blueprint(contest_module, url_prefix='/contest')
+app.register_blueprint(problem_module, url_prefix='/problem')
 
 admin = Admin(app, url='/admin')
 admin.add_view(UserView(db.session, name='Users'))

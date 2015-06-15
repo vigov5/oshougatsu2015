@@ -1,5 +1,7 @@
 import os
 
+from app.submission import constants as SUBMISSION
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_DATABASE_URI = 'mysql://fcc_admin:fcc_admin@localhost/fcc'
@@ -33,3 +35,14 @@ ADMINS = [
 	'nguyen.dang.huy@framgia.com',
 	'le.hoai.phuong@framgia.com'
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+TESTCASE_FOLDER = os.path.join(basedir, 'shared', 'testcases')
+SUBMISSION_FOLDER = os.path.join(basedir, 'shared', 'submissions')
+RUN_FOLDER = os.path.join(basedir, 'run')
+PAYLOAD_FOLDER = os.path.join(basedir, 'payload')
+
+UPLOADED_CODE_DEST = os.path.join(basedir, 'tmp')
+UPLOADED_FILES_ALLOW = SUBMISSION.LANG_EXTENSIONS.values()

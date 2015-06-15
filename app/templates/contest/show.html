@@ -30,7 +30,7 @@
         {%- for problem in contest.problems -%}
         <tr>
             <td>
-                <a href="{{ url_for('contest.scores', contest_id=contest.id) }}">{{ problem.get_name(g.user) }}</a>
+                <a href="{{ url_for('problem.show', problem_id=problem.id) }}">{{ problem.get_name(g.user) }}</a>
             </td>
             <td>
                 {{ problem.get_rank_text() }}
@@ -45,7 +45,7 @@
                 {{ problem.slowly_decreased_interval }}
             </td>
             <td>
-                1
+                {{ problem.get_testcase_nums() }}
             </td>
             <td>
                 {{ problem.limited_time }}

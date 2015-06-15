@@ -1,6 +1,7 @@
+import os
 import datetime
 
-from app import db
+from app import app, db
 from app.submission import constants as SUBMISSION
 
 
@@ -20,6 +21,11 @@ class Submission(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     failed_test_case_result = db.Column(db.String(255))
+
+    def __init__(self, problem_id, user_id, language):
+        self.user_id = user_id
+        self.problem_id = problem_id
+        self.language = language
 
     def is_queued(self):
         return self.state == SUBMISSION.STATE_QUEUED
@@ -44,3 +50,45 @@ class Submission(db.Model):
 
     def is_accepted(self):
         return self.result_status == SUBMISSION.RESULT_ACCEPTED
+
+    def get_source_name(self):
+        return str(self.id) + '.' + SUBMISSION.LANG_EXTENSIONS[self.language]
+
+    def get_target_name(self):
+        if self.language == SUBMISSION.LANG_JAVA:
+            return 'Main.java'
+        else:
+            return self.get_source_name()
+
+    def get_source_name_with_prefix(self):
+        return os.path.join(
+            self.get_source_prefix(),
+            self.get_source_name()
+        )
+
+    def get_target_name_with_prefix(self):
+        return os.path.join(
+            self.get_source_prefix(),
+            self.get_target_name()
+        )
+
+    def get_source_prefix(self):
+        return os.path.join(
+            str(self.user_id),
+            str(self.problem_id),
+            str(self.id)
+        )
+
+    def save_source_code(self, source_code):
+        try:
+            source_code_folder = os.path.join(app.config['SUBMISSION_FOLDER'], self.get_source_prefix())
+            os.system("mkdir -p %s" % source_code_folder)
+            f = open(os.path.join(source_code_folder, self.get_source_name()), 'w')
+            f.write(source_code.read())
+            return True
+        except Exception, e:
+            print e
+            return False
+
+    def get_language_mapping(self):
+        return SUBMISSION.LANG_PARAMS_MAPPING[self.language]

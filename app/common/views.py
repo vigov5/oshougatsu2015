@@ -5,6 +5,9 @@ import flask_menu as menu
 from app import app, lm
 from app.user.models import User
 from app.contest.models import Contest
+from app.submission.models import Submission
+from app.common.tasks import run_code
+from app.common.utils import generate_random_string
 
 
 @app.before_request
@@ -55,3 +58,10 @@ def scoreboard():
         max_score=max_score,
         summary=summary
     )
+
+
+@app.route('/test')
+def test():
+    submission = Submission.query.get(221)
+    run_code.delay(6, 221, submission.get_source_name_with_prefix(), submission.get_target_name())
+    return '123'

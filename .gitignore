@@ -56,3 +56,5 @@ docs/_build/
 venv/
 .idea/
 .DS_Store
+shared/submissions
+shared/testcases

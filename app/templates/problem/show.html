@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="span12">
+    <div class="row-fluid">
+    {% for message in form.user_id.errors %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.problem_id.errors %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.code.errors %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.language.errors %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {% for message in form.csrf_token.errors %}
+      <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+        <div class="col-lg-9">
+            <div class="text-center">
+                <h3>{{ problem.get_name(g.user) }}</h3>
+                <p><b>Contest: </b><a href="/user/contests/13">{{ problem.contest.name }}</a></p>
+                <p>
+                    <b>Rank: </b>{{ problem.get_rank_text() }}
+                    <br/>
+                    <b>Starting point: </b>{{ problem.starting_point }}
+                    <br/>
+                    <b>Wrong answer decreased point: </b>{{ problem.wrong_answer_decreased_point }}
+                    <br/>
+                    <b>Slowly decreased interval: </b>{{ problem.slowly_decreased_interval }}
+                    <br/>
+                    <b>Number of test cases: </b>{{ problem.get_testcase_nums() }}
+                    <br/>
+                    <b>Limited time: </b>{{ problem.limited_time }} ms
+                    <br/>
+                    <b>Limited memory: </b>{{ problem.limited_memory }} KB
+                    <br/>
+                    <b>Limited source size: </b>{{ problem.limited_source_size }} bytes
+                    <br/>
+                </p>
+            </div>
+            <h3>Content:</h3>
+            <p>
+                {{ problem.get_content(g.user)|safe }}
+            </p>
+        </div>
+        <div class="col-lg-3">
+            {% if g.user and g.user.is_authenticated() %}
+            <h3>Submit</h3>
+            <div>
+                <form method=POST enctype=multipart/form-data action="">
+                <p><label>Language:</label> {{ form.language }}</p>
+                {{ form.code }}
+                {{ form.csrf_token }}
+                <input name="user_id" type="hidden" value="{{ g.user.id }}">
+                <input name="problem_id" type="hidden" value="{{ problem.id }}">
+                <br>
+                {{ form.submit(class='btn btn-primary') }}
+                </form>
+            </div>
+            {% if problem.contest.is_ended() %}
+            <h3>Contest ended!</h3>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="row-fluid">
+        <h1>My submissions</h1>
+    </div>
+</div>
+{% endblock %}

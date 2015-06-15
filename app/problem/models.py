@@ -1,6 +1,7 @@
+import os
 import datetime
 
-from app import db
+from app import app, db
 from app.problem import constants as PROBLEM
 
 
@@ -33,3 +34,19 @@ class Problem(db.Model):
             return self.name_vi if user.is_locale_vn() else self.name_en
         else:
             return self.name_en
+
+    def get_testcase_nums(self):
+        test_files = []
+        testcase_path = os.path.join(app.config['TESTCASE_FOLDER'], str(self.id))
+        for root, dirs, files in os.walk(testcase_path, topdown=False):
+            for name in files:
+                if 'test' in name:
+                    test_files.append(name)
+
+        return len(test_files)
+
+    def get_content(self, user):
+        if user and user.is_authenticated():
+            return self.content_vi if user.is_locale_vn() else self.content_en
+        else:
+            return self.content_en

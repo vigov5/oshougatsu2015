@@ -16,12 +16,21 @@ LANGUAGES = {
 }
 
 LANG_EXTENSIONS = {
-	LANG_C: '.c',
-	LANG_CPP: '.cpp',
-	LANG_RUBY: '.rb',
-	LANG_PHP: '.php',
-	LANG_JAVA: '.java',
-	LANG_PYTHON: '.py',
+	LANG_C: 'c',
+	LANG_CPP: 'cpp',
+	LANG_RUBY: 'rb',
+	LANG_PHP: 'php',
+	LANG_JAVA: 'java',
+	LANG_PYTHON: 'py',
+}
+
+LANG_PARAMS_MAPPING = {
+	LANG_C: 'c',
+	LANG_CPP: 'c++',
+	LANG_RUBY: 'ruby',
+	LANG_PHP: 'php',
+	LANG_JAVA: 'java',
+	LANG_PYTHON: 'python',
 }
 
 # state
