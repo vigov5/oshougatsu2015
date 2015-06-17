@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block js %}
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+{% endblock %}
+{% block content %}
+<div class="row-fluid">
+<div class="col-lg-12">
+    <div>
+      <h5>By {{ submission.user.email }}, contest: <a href="{{ url_for('contest.show', contest_id=submission.problem.contest.id) }}">{{ submission.problem.contest.name }}</a>, problem: <a href="{{ url_for('problem.show', problem_id=submission.problem.id) }}">{{ submission.problem.get_name(g.user) }}</a>, last passed test case: {{ submission.last_passed_test_case }}<h5>
+    </div>
+    <pre class="prettyprint">{{ submission.get_source_code() }}</pre>
+  </div>
+</div>
+  <div>
+    <h4 style="color:red;">{{ submission.result_status }}<h5>
+  </div>
+  {% if submission.is_wrong_answer() %}
+    {% if not submission.last_passed_test_case %}
+      {% set last_passed_test_case = 0 %}
+    {% else %}
+      {% set last_passed_test_case = submission.last_passed_test_case %}
+    {% endif %}
+
+  <table contenteditable="true" class="table table-bordered">
+
+    <thead>
+      <tr>
+        <th>input</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre>{{ submission.problem.get_testcase(last_passed_test_case + 1) }}</pre>
+        </td>
+      </tr>
+    </tbody>
+
+    <thead>
+      <tr>
+        <th>output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre>{{ submission.failed_test_case_result }}</pre>
+        </td>
+      </tr>
+    </tbody>
+
+    <thead>
+      <tr>
+        <th>expected output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <pre>{{ submission.problem.get_output(last_passed_test_case + 1) }}</pre>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}

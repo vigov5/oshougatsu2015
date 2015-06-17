@@ -56,6 +56,7 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
             time.sleep(1)
             count += 1
     except Exception, e:
+        logger.debug(e)
         print e
     finally:
         os.system("rm -rf %s" % temp_path)

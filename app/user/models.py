@@ -81,3 +81,6 @@ class User(db.Model):
 
     def is_locale_en(self):
         return self.locale == USER.LOCALE_EN
+
+    def  get_locale_text(self):
+        return USER.LOCALES[self.locale]

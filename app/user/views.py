@@ -7,6 +7,7 @@ from flask_admin.contrib.sqla import ModelView
 from app import app, db
 from app.user.forms import LoginForm, SignupForm, SendForgotPasswordForm, ResetPasswordForm
 from app.user.models import User
+from app.submission.models import Submission
 from app.user import constants as USER
 from app.common.utils import generate_token, send_email
 
@@ -113,6 +114,30 @@ def reset_password(token):
         return redirect(url_for('user.login'))
 
     return render_template('user/reset_password.html', form=form)
+
+
+@user_module.route('/language/switch')
+@login_required
+def change_language():
+    if g.user.is_locale_vn():
+        g.user.locale = USER.LOCALE_EN
+    else:
+        g.user.locale = USER.LOCALE_VN
+    db.session.add(g.user)
+    db.session.commit()
+
+    return redirect(url_for('index'))
+
+
+@user_module.route('/submissions/<int:page>', methods=['GET'])
+@login_required
+def my_submissions(page=1):
+    if g.user.is_admin():
+        submissions = Submission.query.order_by(Submission.id.desc()).paginate(page, per_page=50)
+    else:
+        submissions = g.user.submissions.order_by(Submission.id.desc()).paginate(page, per_page=50)
+
+    return render_template('user/submissions.html', submissions=submissions)
 
 
 class UserView(ModelView):

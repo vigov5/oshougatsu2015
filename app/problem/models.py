@@ -50,3 +50,19 @@ class Problem(db.Model):
             return self.content_vi if user.is_locale_vn() else self.content_en
         else:
             return self.content_en
+
+    def get_testcase(self, num=1):
+        try:
+            testcase_file_path = os.path.join(app.config['TESTCASE_FOLDER'], str(self.id), "test%03d.txt" % num)
+            with open(testcase_file_path, 'r') as f:
+                return f.read()
+        except Exception, e:
+            return ''
+
+    def get_output(self, num=1):
+        try:
+            output_file_path = os.path.join(app.config['TESTCASE_FOLDER'], str(self.id), "out%03d.txt" % num)
+            with open(output_file_path, 'r') as f:
+                return f.read()
+        except Exception, e:
+            return ''

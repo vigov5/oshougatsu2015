@@ -58,10 +58,3 @@ def scoreboard():
         max_score=max_score,
         summary=summary
     )
-
-
-@app.route('/test')
-def test():
-    submission = Submission.query.get(221)
-    run_code.delay(6, 221, submission.get_source_name_with_prefix(), submission.get_target_name())
-    return '123'

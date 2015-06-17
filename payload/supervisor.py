@@ -64,7 +64,8 @@ for test_file in test_files:
                 result['reason'] = RESULT_RUNTIME_ERROR
             elif '[COMPILE]' in outs:
                 result['reason'] = RESULT_COMPILE_ERROR
-            result['last_passed_test_case'] = i+1
+            result['last_passed_test_case'] = i
+            result['failed_test_case_result'] = outs
             write_result(result)
             sys.exit(0)
         else:
@@ -74,7 +75,8 @@ for test_file in test_files:
                 max_time = max(int(m.group('elasped')), max_time)
             else:
                 result['reason'] = RESULT_RUNTIME_ERROR
-                result['last_passed_test_case'] = i+1
+                result['last_passed_test_case'] = i
+                result['failed_test_case_result'] = outs
                 write_result(result)
                 sys.exit(0)
             outs = re.sub(r"\[MEMORY:([0-9]+)KB\]\[TIME:([0-9]+)ms\]", "", outs)
@@ -85,14 +87,14 @@ for test_file in test_files:
                     result['last_passed_test_case'] = len(test_files)
                 else:
                     result['reason'] = RESULT_WRONG_ANSWER
-                    result['last_passed_test_case'] = i+1
+                    result['last_passed_test_case'] = i
                     result['failed_test_case_result'] = outs
                     write_result(result)
                     sys.exit(0)
         i += 1
     except TimeoutExpired:
         proc.kill()
-        result['last_passed_test_case'] = i+1
+        result['last_passed_test_case'] = i
         result['reason'] = RESULT_TIME_EXCEEDED
         write_result(result)
         sys.exit(0)

@@ -13,11 +13,11 @@ class Submission(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     language = db.Column(db.Integer)
     state = db.Column(db.String(255))
-    result_status = db.Column(db.String(255))
-    last_passed_test_case = db.Column(db.Integer)
-    used_time = db.Column(db.Integer)
-    used_memory = db.Column(db.Integer)
-    received_point = db.Column(db.Integer)
+    result_status = db.Column(db.String(255), default='')
+    last_passed_test_case = db.Column(db.Integer, default=0)
+    used_time = db.Column(db.Integer, default=0)
+    used_memory = db.Column(db.Integer, default=0)
+    received_point = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     failed_test_case_result = db.Column(db.String(255))
@@ -90,5 +90,16 @@ class Submission(db.Model):
             print e
             return False
 
+    def get_source_code(self):
+        try:
+            source_file_path = os.path.join(app.config['SUBMISSION_FOLDER'], self.get_source_name_with_prefix())
+            with open(source_file_path, 'r') as f:
+                return f.read()
+        except Exception, e:
+            return ''
+
     def get_language_mapping(self):
         return SUBMISSION.LANG_PARAMS_MAPPING[self.language]
+
+    def get_language_name(self):
+        return SUBMISSION.LANGUAGES[self.language]

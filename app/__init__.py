@@ -41,16 +41,21 @@ code_upload_set = UploadSet('code', extensions=app.config['UPLOADED_FILES_ALLOW'
 configure_uploads(app, code_upload_set)
 patch_request_class(app, 2 * 1024 * 1024) # 2MB
 
+app.jinja_env.add_extension('jinja2.ext.do')
+
 from app.common import views
 from app.user.views import user_module, UserView
 from app.contest.views import contest_module, ContestView
 from app.problem.views import problem_module, ProblemView
+from app.submission.views import submission_module, SubmissionView
 
 app.register_blueprint(user_module, url_prefix='/user')
 app.register_blueprint(contest_module, url_prefix='/contest')
 app.register_blueprint(problem_module, url_prefix='/problem')
+app.register_blueprint(submission_module, url_prefix='/submission')
 
 admin = Admin(app, url='/admin')
 admin.add_view(UserView(db.session, name='Users'))
 admin.add_view(ContestView(db.session, name='Contests'))
 admin.add_view(ProblemView(db.session, name='Problems'))
+admin.add_view(SubmissionView(db.session, name='Submissions'))
