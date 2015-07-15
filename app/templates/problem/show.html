@@ -20,7 +20,7 @@
         <div class="col-lg-9">
             <div class="text-center">
                 <h3>{{ problem.get_name(g.user) }}</h3>
-                <p><b>Contest: </b><a href="/user/contests/13">{{ problem.contest.name }}</a></p>
+                <p><b>Contest: </b><a href="{{ url_for('contest.show', contest_id=problem.contest.id) }}">{{ problem.contest.name }}</a></p>
                 <p>
                     <b>Rank: </b>{{ problem.get_rank_text() }}
                     <br/>
