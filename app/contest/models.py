@@ -31,3 +31,6 @@ class Contest(db.Model):
 
     def __str__(self):
         return self.name
+
+    def is_running(self):
+        return self.is_started() and not self.is_ended()
