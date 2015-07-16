@@ -20,7 +20,7 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         new_user = User(form.email.data, form.password.data)
-        user.update_login_info(request.environ['REMOTE_ADDR'])
+        new_user.update_login_info(request.environ['REMOTE_ADDR'])
         db.session.add(new_user)
         db.session.commit()
 

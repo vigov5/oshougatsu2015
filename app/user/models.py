@@ -59,6 +59,8 @@ class User(db.Model):
         return self.email in app.config['ADMINS']
 
     def update_login_info(self, remote_ip):
+        if not self.sign_in_count:
+            self.sign_in_count = 0
         self.sign_in_count += 1
         self.current_sign_in_at = datetime.datetime.now()
         self.current_sign_in_ip = remote_ip

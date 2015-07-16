@@ -34,7 +34,6 @@ celery==3.1.18
 certifi==14.05.14
 decorator==3.4.2
 distribute==0.7.3
-elo==0.1
 flower==0.8.2
 futures==3.0.3
 infinity==1.3
