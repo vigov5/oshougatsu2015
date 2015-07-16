@@ -20,7 +20,14 @@ class SubmissionView(ModelView):
 
     column_default_sort = ('id', True)
 
-    column_list = ('problem_id', 'user_id', 'user.email', 'language',
+    can_create = False
+
+    column_list = ('id', 'problem_id', 'user_id', 'user.email', 'language',
+        'state', 'result_status', 'last_passed_test_case',
+        'used_time', 'used_memory', 'received_point', 'failed_test_case_result'
+    )
+
+    column_filters = ('id', 'problem_id', 'user_id', 'user.email', 'language',
         'state', 'result_status', 'last_passed_test_case',
         'used_time', 'used_memory', 'received_point', 'failed_test_case_result'
     )
