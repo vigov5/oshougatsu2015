@@ -109,11 +109,14 @@ class Submission(db.Model):
             if self.problem.submissions.filter_by(user_id=self.user_id, result_status=SUBMISSION.RESULT_ACCEPTED).count() != 0:
                 self.received_point = 0
             else:
-                total_wrong_submissions = self.problem.submissions.filter_by(user_id=self.user_id). \
-                    filter(Submission.result_status!=SUBMISSION.RESULT_ACCEPTED).count()
-                wrong_points = total_wrong_submissions * self.problem.wrong_answer_decreased_point
+                fail_submissions = self.problem.submissions. \
+                    filter_by(user_id=self.user_id, state=SUBMISSION.STATE_FINISHED). \
+                    filter(Submission.result_status != SUBMISSION.RESULT_ACCEPTED)
+                wrong_points = fail_submissions.count() * self.problem.wrong_answer_decreased_point
+
                 diff = datetime.datetime.now() - self.problem.contest.start_at
                 interval_points = int(diff.total_seconds() / self.problem.slowly_decreased_interval)
+
                 if self.problem.starting_point > wrong_points + interval_points:
                     self.received_point = self.problem.starting_point - wrong_points - interval_points
                 else:
