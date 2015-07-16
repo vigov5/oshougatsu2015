@@ -43,7 +43,7 @@ def login():
         db.session.commit()
 
         login_user(user)
-        flash('Logged in successfully.')
+        flash('Logged in successfully !', category='success')
 
         return redirect(request.args.get('next') or url_for('index'))
     return render_template('user/login.html', form=form)
@@ -56,6 +56,7 @@ def logout():
     db.session.add(g.user)
     db.session.commit()
     logout_user()
+    flash('Logged out successfully !', category='success')
 
     return redirect(url_for('index'))
 
@@ -66,7 +67,8 @@ def forgot_password():
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-
+        if not user.reset_password_token:
+            user.refresh_password_token()
         token = user.reset_password_token.encode('base64').strip().replace('=', '_')
         send_email(
             'Framgia Code Contest - Reset Password',
@@ -75,7 +77,7 @@ def forgot_password():
             'reset_password',
             dict(token=token)
         )
-
+        flash('Reset password email sent !', category='success')
         user.log_sent_password_token()
         db.session.add(user)
         db.session.commit()
@@ -99,7 +101,7 @@ def reset_password(token):
         user.refresh_password_token()
         db.session.add(user)
         db.session.commit()
-        flash('Your token is expired ! Please request a new one.')
+        flash('Your token is expired ! Please request a new one.', category='danger')
 
         return redirect(url_for('user.forgot_password'))
 
@@ -109,7 +111,7 @@ def reset_password(token):
         user.refresh_password_token()
         db.session.add(user)
         db.session.commit()
-        flash('Password changed successfully.')
+        flash('Password changed successfully !', category='success')
 
         return redirect(url_for('user.login'))
 
