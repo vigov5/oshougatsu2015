@@ -32,15 +32,17 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
         os.system("chmod 777 -R %s" % temp_path)
 
         cmd = "docker run -d -u mysql -i -t -v  '%s':/usercode virtual_machine /usercode/supervisor.py %s /usercode %s %s" % (temp_path, 2, language, target_name)
-        logger.debug(cmd)
+        logger.info(cmd)
         os.system(cmd)
         count = 0
         result_file = os.path.join(temp_path, 'result')
         while count <= COMMON.TASK_TIMEOUT_SEC:
             if os.path.isfile(result_file):
+                # Wait for result to be written
+                time.sleep(2)
                 with open(result_file, 'r') as f:
                     data = json.loads(f.read())
-                    logger.debug(data)
+                    logger.info(data)
                     submission = Submission.query.get(int(submission_id))
                     submission.state = SUBMISSION.STATE_FINISHED
                     if data['success']:
@@ -57,7 +59,7 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
             time.sleep(1)
             count += 1
     except Exception, e:
-        logger.debug(e)
+        logger.info(e)
         print e
     finally:
         os.system("rm -rf %s" % temp_path)
