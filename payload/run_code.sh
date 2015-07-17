@@ -20,8 +20,8 @@ binary="$prefix/tmp_"$(date +%Y%m%d_%H%M%S)
 log="$prefix/tmp_"$(date +%Y%m%d_%H%M%S_)"log"
 
 if [[ "$input_file" == '' ]] ; then
- 	echo 'Usage :' "$sh_file" 'source_file language input_file'
- 	exit 0
+	echo 'Usage :' "$sh_file" 'source_file language input_file prefix'
+	exit 0
 fi
 
 # Language Ruby
@@ -42,6 +42,27 @@ elif [[ "$language" == 'php' ]] ; then
 elif [[ "$language" == 'python' ]] ; then
 	ts=$(date +%s%N)
 	output=$(/usr/bin/time -f "[MEMORY:%MKB]" python "$source_file" < "$input_file" 2> "$log")
+	last_run_error=$?
+	time_run=$((($(date +%s%N) - $ts)/1000000))
+
+# Language Go
+elif [[ "$language" == 'go' ]] ; then
+	ts=$(date +%s%N)
+	output=$(/usr/bin/time -f "[MEMORY:%MKB]" go run "$source_file" < "$input_file" 2> "$log")
+	last_run_error=$?
+	time_run=$((($(date +%s%N) - $ts)/1000000))
+
+# Language Javascript (NodeJS)
+elif [[ "$language" == 'javascript' ]] ; then
+	ts=$(date +%s%N)
+	output=$(/usr/bin/time -f "[MEMORY:%MKB]" nodejs "$source_file" < "$input_file" 2> "$log")
+	last_run_error=$?
+	time_run=$((($(date +%s%N) - $ts)/1000000))
+
+# Language Perl
+elif [[ "$language" == 'perl' ]] ; then
+	ts=$(date +%s%N)
+	output=$(/usr/bin/time -f "[MEMORY:%MKB]" perl "$source_file" < "$input_file" 2> "$log")
 	last_run_error=$?
 	time_run=$((($(date +%s%N) - $ts)/1000000))
 

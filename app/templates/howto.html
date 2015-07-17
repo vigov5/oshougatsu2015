@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block js %}
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+{% endblock %}
+{% block content %}
+<div class="row-fluid">
+<h1>How to submit code ?</h1>
+<p>Your need an account to be able to submit code. Please <a href="{{ url_for('user.signup') }}">sign up</a> or <a href="{{ url_for('user.login') }}">log in</a>.<br>Let's look at this simple example problem:</p>
+<h3>Content:</h3>
+<p>Give 2 integer numbers a and b. Write a program that output the sum of a and b</p>
+    <div>
+      <dl>
+        <dt>
+          Input
+        </dt>
+        <dd>
+          The first and the only line of the input contains two distinct integers a and b, separated by a space.
+        </dd><dt>
+          Output
+        </dt>
+        <dd>
+          Print a single number — the sum of a and b
+        </dd>
+        <br>
+        <dt>
+          Sample test(s)
+        </dt>
+        <dd>
+          <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>input</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                  <pre>4 6</pre>
+                </td>
+            </tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>output</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                  <pre>10</pre>
+                </td>
+            </tr>
+          </tbody>
+          </table>
+          <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>input</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                  <pre>10 -10</pre>
+                </td>
+            </tr>
+          </tbody>
+          <thead>
+            <tr>
+              <th>output</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                  <pre>0</pre>
+                </td>
+            </tr>
+          </tbody>
+          </table>
+        </dd>
+      </dl>
+    </div>
+<h2>Example submisssions</h2>
+Please see below examples to understanding how to read from standard input and write to standard output. <br>Your output must be strictly the same as the output of testcases.
+<h3>Python</h3>
+<p>
+<pre class="prettyprint">a, b = map(int, raw_input().split())
+print a + b
+</pre>
+</p>
+<h3>Ruby</h3>
+<p>
+<pre class="prettyprint">a, b = gets.split.map &:to_i
+puts a + b
+</pre>
+</p>
+<h3>C++</h3>
+<p>
+<pre class="prettyprint">#include &lt;iostream>
+#include &lt;algorithm>
+
+using namespace std;
+
+int main()
+{
+  int a, b;
+  cin >> a >> b;
+
+  cout << (a +b);
+
+  return 0;
+}
+</pre>
+</p>
+<h3>C</h3>
+<p>
+<pre class="prettyprint">
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+
+int main() {
+  int a;
+  int b;
+  scanf("%d", &a);
+  scanf("%d", &b);
+
+  printf("%d", a + b);
+
+  return 0;
+}
+</pre>
+</p>
+<h3>Java</h3>
+<span>Note: Please set your class name to <strong>Main</strong></span>
+<p>
+<pre class="prettyprint">import java.util.Scanner;
+
+public class Main {
+  public static void main(String args[]){
+    Scanner sc = new Scanner(System.in);
+    int a = sc.nextInt();
+    int b = sc.nextInt();
+
+    System.out.print(a + b);
+  }
+}
+</pre>
+</p>
+<h3>PHP</h3>
+<p>
+<pre class="prettyprint">&lt;?php
+$in = fopen("php://stdin", "r");
+$in_string = fgets($in, 1000);
+$params = explode(" ", $in_string);
+$a = $params[0];
+$b = $params[1];
+echo $a + $b;
+?>
+</pre>
+</p>
+<h3>Go</h3>
+<p>
+<pre class="prettyprint">package main
+
+import "fmt"
+
+func main(){
+  var a int
+  var b int
+  fmt.Scanf("%d", &a)
+  fmt.Scanf("%d", &b)
+  fmt.Printf("%d", a +b)
+}
+</pre>
+</p>
+
+<h3>Perl</h3>
+<p>
+<pre class="prettyprint">$line=&lt;STDIN>;
+chomp $line;
+($a, $b)= split / +/, $line;
+
+print $a + $b;
+</pre>
+</p>
+</div>
+
+<h3>JavaScript (NodeJS)</h3>
+<p>
+<pre class="prettyprint">var readline = require('readline');
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', function(line){
+    var nums = line.split(" ");
+    var a = parseInt(nums[0]);
+    var b = parseInt(nums[1]);
+    console.log(a +b);
+
+    process.exit();
+})
+</pre>
+</p>
+</div>
+
+{% endblock %}

@@ -5,14 +5,20 @@ LANG_RUBY = 2
 LANG_PHP = 3
 LANG_JAVA = 4
 LANG_PYTHON = 5
+LANG_GO = 6
+LANG_JAVASCRIPT = 7
+LANG_PERL = 8
 
 LANGUAGES = {
 	LANG_C: 'C',
 	LANG_CPP: 'C++',
-	LANG_RUBY: 'Ruby',
-	LANG_PHP: 'PHP',
-	LANG_JAVA: 'Java',
-	LANG_PYTHON: 'Python'
+	LANG_RUBY: 'Ruby 1.9',
+	LANG_PHP: 'PHP 5.5',
+	LANG_JAVA: 'Java 7',
+	LANG_PYTHON: 'Python 2.7',
+	LANG_GO: 'Go 1.2',
+	LANG_JAVASCRIPT: 'JavaScript (NodeJS 0.10)',
+	LANG_PERL: 'Perl 5.18'
 }
 
 LANG_EXTENSIONS = {
@@ -22,6 +28,9 @@ LANG_EXTENSIONS = {
 	LANG_PHP: 'php',
 	LANG_JAVA: 'java',
 	LANG_PYTHON: 'py',
+	LANG_GO: 'go',
+	LANG_JAVASCRIPT: 'js',
+	LANG_PERL: 'pl'
 }
 
 LANG_PARAMS_MAPPING = {
@@ -31,6 +40,9 @@ LANG_PARAMS_MAPPING = {
 	LANG_PHP: 'php',
 	LANG_JAVA: 'java',
 	LANG_PYTHON: 'python',
+	LANG_GO: 'go',
+	LANG_JAVASCRIPT: 'javascript',
+	LANG_PERL: 'perl'
 }
 
 # state

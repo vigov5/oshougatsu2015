@@ -58,3 +58,8 @@ def scoreboard():
         max_score=max_score,
         summary=summary
     )
+
+@app.route('/howto')
+@menu.register_menu(app, '.howto', 'How to', order=2)
+def howto():
+    return render_template('howto.html')

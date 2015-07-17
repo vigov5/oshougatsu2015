@@ -8,6 +8,7 @@ from app import app, db, celery
 from app.common.utils import generate_random_string
 from app.common import constants as COMMON
 from app.submission.models import Submission
+from app.problem.models import Problem
 from app.submission import constants as SUBMISSION
 
 
@@ -31,7 +32,14 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
         # chmod 777
         os.system("chmod 777 -R %s" % temp_path)
 
-        cmd = "docker run -d -u mysql -i -t -v  '%s':/usercode virtual_machine /usercode/supervisor.py %s /usercode %s %s" % (temp_path, 2, language, target_name)
+        problem = Problem.query.get(int(problem_id))
+        timeout = problem.limited_time
+        bonus_time = 0
+        if language == SUBMISSION.LANG_PARAMS_MAPPING[SUBMISSION.LANG_JAVA]:
+            bonus_time = 2000
+        timeout += bonus_time
+
+        cmd = "docker run -d -u mysql -i -t -v  '%s':/usercode virtual_machine /usercode/supervisor.py %s /usercode %s %s" % (temp_path, timeout/1000, language, target_name)
         logger.info(cmd)
         os.system(cmd)
         count = 0
@@ -46,7 +54,7 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
                     submission = Submission.query.get(int(submission_id))
                     submission.state = SUBMISSION.STATE_FINISHED
                     if data['success']:
-                        submission.used_time = data['time']
+                        submission.used_time = int(data['time']) - bonus_time
                         submission.used_memory = data['memory']
                     elif data['reason'] == SUBMISSION.RESULT_WRONG_ANSWER:
                         submission.failed_test_case_result = data['failed_test_case_result']
@@ -63,3 +71,4 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
         print e
     finally:
         os.system("rm -rf %s" % temp_path)
+        pass
