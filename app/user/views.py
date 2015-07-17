@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user, login_required
 from flask_admin.contrib.sqla import ModelView
 
 from app import app, db
-from app.user.forms import LoginForm, SignupForm, SendForgotPasswordForm, ResetPasswordForm
+from app.user.forms import LoginForm, SignupForm, SendForgotPasswordForm, ResetPasswordForm, ChangePasswordForm
 from app.user.models import User
 from app.submission.models import Submission
 from app.user import constants as USER
@@ -140,6 +140,23 @@ def my_submissions(page=1):
         submissions = g.user.submissions.order_by(Submission.id.desc()).paginate(page, per_page=50)
 
     return render_template('user/submissions.html', submissions=submissions)
+
+
+@user_module.route('/change_password/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def change_password(user_id=None):
+    if g.user.is_admin():
+        user = User.query.get_or_404(user_id)
+    else:
+        user = User.query.get_or_404(g.user.id)
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.new_password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Password changed successfully.', category='success')
+        return redirect(url_for('index'))
+    return render_template('user/change_password.html', user=user, form=form)
 
 
 class UserView(ModelView):

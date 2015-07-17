@@ -131,3 +131,22 @@ class ResetPasswordForm(Form):
             return False
 
         return True
+
+
+class ChangePasswordForm(Form):
+    new_password = PasswordField('Password', [
+        validators.Required('Please enter new password.'),
+        validators.Length(min=6, message='Passwords is at least 6 characters.'),
+        validators.EqualTo('new_confirm', message='Passwords must match')
+    ])
+    new_confirm = PasswordField('Repeat Password')
+    submit = SubmitField('Change password')
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        return True
