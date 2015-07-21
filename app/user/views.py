@@ -128,7 +128,7 @@ def change_language():
     db.session.add(g.user)
     db.session.commit()
 
-    return redirect(url_for('index'))
+    return redirect(request.args.get('next') or request.referrer or url_for('index'))
 
 
 @user_module.route('/submissions/<int:page>', methods=['GET'])
