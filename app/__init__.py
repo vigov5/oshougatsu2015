@@ -48,11 +48,13 @@ from app.user.views import user_module, UserView
 from app.contest.views import contest_module, ContestView
 from app.problem.views import problem_module, ProblemView
 from app.submission.views import submission_module, SubmissionView
+from app.api.v1.views import api_v1_module
 
 app.register_blueprint(user_module, url_prefix='/user')
 app.register_blueprint(contest_module, url_prefix='/contest')
 app.register_blueprint(problem_module, url_prefix='/problem')
 app.register_blueprint(submission_module, url_prefix='/submission')
+app.register_blueprint(api_v1_module, url_prefix='/api/v1')
 
 admin = Admin(app, url='/admin')
 admin.add_view(UserView(db.session, name='Users'))
