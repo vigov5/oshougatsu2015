@@ -47,6 +47,7 @@ from app.common import views
 from app.user.views import user_module, UserView
 from app.contest.views import contest_module, ContestView
 from app.problem.views import problem_module, ProblemView
+from app.hint.views import HintView
 from app.submission.views import submission_module, SubmissionView
 from app.api.v1.views import api_v1_module
 
@@ -60,4 +61,5 @@ admin = Admin(app, url='/admin')
 admin.add_view(UserView(db.session, name='Users'))
 admin.add_view(ContestView(db.session, name='Contests'))
 admin.add_view(ProblemView(db.session, name='Problems'))
+admin.add_view(HintView(db.session, name='Hints'))
 admin.add_view(SubmissionView(db.session, name='Submissions'))

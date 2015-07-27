@@ -40,6 +40,16 @@
                     <br/>
                 </p>
             </div>
+            <h3>Hints</h3>
+            {% if problem.hints.filter_by(is_open=True).all()|length %}
+            <ol>
+            {% for hint in problem.hints %}
+              <li>{{ hint.description|safe }}</li>
+            {% endfor %}
+            </ol>
+            {% else %}
+            <p> No hint yet !</p>
+            {% endif %}
             <h3>Content:</h3>
             <p>
                 {{ problem.get_content(g.user)|safe }}

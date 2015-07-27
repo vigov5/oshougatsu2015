@@ -25,6 +25,7 @@ class Problem(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
 
     submissions = db.relationship('Submission', backref='problem', lazy='dynamic')
+    hints = db.relationship('Hint', backref='problem', lazy='dynamic')
 
     def get_rank_text(self):
         return PROBLEM.RANKS[self.rank]
@@ -66,3 +67,6 @@ class Problem(db.Model):
                 return f.read()
         except Exception, e:
             return ''
+
+    def __str__(self):
+        return self.name_en
