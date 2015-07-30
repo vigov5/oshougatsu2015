@@ -1,5 +1,6 @@
 from flask import g, Blueprint, render_template, redirect, url_for
 from flask_admin.contrib.sqla import ModelView
+from flask_login import login_required
 
 from app import db
 from app.common.tasks import run_code
@@ -10,8 +11,11 @@ from app.submission import constants as SUBMISSION
 submission_module = Blueprint('submission', __name__)
 
 @submission_module.route('/<int:submission_id>', methods=['GET'])
+@login_required
 def show(submission_id):
     submission = Submission.query.get_or_404(submission_id)
+    if g.user.id != submission.user.id and not g.user.is_admin():
+            return redirect(url_for('index'))
 
     return render_template('submission/show.html', submission=submission)
 

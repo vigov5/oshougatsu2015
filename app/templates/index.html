@@ -21,8 +21,10 @@
       <td>
       {% if contest.is_ended() %}
       <span class="label label-default">::: ENDED :::</span>
-      {% else %}
+      {% elif contest.is_running() %}
       <span class="label label-info">!!! ON AIR !!!</span>
+      {% elif not contest.is_started() %}
+      <span class="label label-warning">::: PENDING :::</span>
       {% endif %}
       </td>
     </tr>

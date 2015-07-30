@@ -15,6 +15,13 @@ problem_module = Blueprint('problem', __name__)
 @problem_module.route('/<int:problem_id>', methods=['GET', 'POST'])
 def show(problem_id):
     problem = Problem.query.get_or_404(problem_id)
+    if not problem.contest.is_started():
+        if g.user.is_authenticated():
+            if not g.user.is_admin():
+                return redirect(url_for('index'))
+        else:
+            return redirect(url_for('index'))
+
     if g.user and g.user.is_authenticated():
         my_submissions = g.user.submissions.filter_by(problem_id=problem.id).order_by(Submission.id.desc()).all()
     else:
