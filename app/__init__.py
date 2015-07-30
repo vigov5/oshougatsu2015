@@ -31,7 +31,7 @@ menu.Menu(app=app)
 
 lm = LoginManager()
 lm.init_app(app)
-lm.login_view = 'login'
+lm.login_view = 'user.login'
 
 celery = make_celery(app)
 
