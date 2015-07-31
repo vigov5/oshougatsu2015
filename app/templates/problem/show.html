@@ -51,9 +51,7 @@
             <p> No hint yet !</p>
             {% endif %}
             <h3>Content:</h3>
-            <p>
-                {{ problem.get_content(g.user)|safe }}
-            </p>
+            {{ problem.get_content(g.user)|safe }}
         </div>
         <div class="col-lg-3">
             {% if g.user and g.user.is_authenticated() %}
