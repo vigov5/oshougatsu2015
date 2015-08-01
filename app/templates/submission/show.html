@@ -14,13 +14,13 @@
   <div>
     <h4 style="color:red;">{{ submission.result_status }}<h5>
   </div>
+  {% if not submission.problem.contest.is_running() %}
   {% if submission.is_wrong_answer() %}
     {% if not submission.last_passed_test_case %}
       {% set last_passed_test_case = 0 %}
     {% else %}
       {% set last_passed_test_case = submission.last_passed_test_case %}
     {% endif %}
-
   <table contenteditable="true" class="table table-bordered">
 
     <thead>
@@ -61,8 +61,8 @@
         </td>
       </tr>
     </tbody>
-
   </table>
+  {% endif %}
   {% endif %}
   </div>
 </div>
