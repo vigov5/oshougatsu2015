@@ -108,7 +108,7 @@ class Submission(db.Model):
         if self.problem.contest.is_running():
             if self.problem.submissions.filter_by(user_id=self.user_id, result_status=SUBMISSION.RESULT_ACCEPTED).count() != 0:
                 self.received_point = 0
-            else:
+            elif self.result_status == SUBMISSION.RESULT_ACCEPTED:
                 fail_submissions = self.problem.submissions. \
                     filter_by(user_id=self.user_id, state=SUBMISSION.STATE_FINISHED). \
                     filter(Submission.result_status != SUBMISSION.RESULT_ACCEPTED)
