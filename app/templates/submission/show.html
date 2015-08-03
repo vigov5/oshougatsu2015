@@ -14,7 +14,7 @@
   <div>
     <h4 style="color:red;">{{ submission.result_status }}<h5>
   </div>
-  {% if not submission.problem.contest.is_running() %}
+  {% if submission.problem.contest.is_ended() %}
   {% if submission.is_wrong_answer() %}
     {% if not submission.last_passed_test_case %}
       {% set last_passed_test_case = 0 %}
