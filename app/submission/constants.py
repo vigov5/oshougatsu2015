@@ -45,6 +45,30 @@ LANG_PARAMS_MAPPING = {
 	LANG_PERL: 'perl'
 }
 
+CODEMIRROR_MIMES = {
+	LANG_C: 'text/x-csrc',
+	LANG_CPP: 'text/x-c++src',
+	LANG_RUBY: 'text/x-ruby',
+	LANG_PHP: 'application/x-httpd-php',
+	LANG_JAVA: 'text/x-java',
+	LANG_PYTHON: 'text/x-python',
+	LANG_GO: 'text/x-go',
+	LANG_JAVASCRIPT: 'text/javascript',
+	LANG_PERL: 'text/x-perl'
+}
+
+CODEMIRROR_MODES = {
+	LANG_C: 'clike',
+	LANG_CPP: 'clike',
+	LANG_RUBY: 'ruby',
+	LANG_PHP: 'php',
+	LANG_JAVA: 'clike',
+	LANG_PYTHON: 'python',
+	LANG_GO: 'go',
+	LANG_JAVASCRIPT: 'javascript',
+	LANG_PERL: 'perl'
+}
+
 # state
 STATE_QUEUED = 'queued'
 STATE_FINISHED = 'finished'

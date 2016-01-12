@@ -1,5 +1,6 @@
 import os
 import time
+import datetime
 import json
 
 from celery.utils.log import get_task_logger
@@ -60,6 +61,7 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
                         submission.failed_test_case_result = data['failed_test_case_result']
                     submission.last_passed_test_case = data['last_passed_test_case']
                     submission.result_status = data['reason']
+                    submission.updated_at = datetime.datetime.now()
                     submission.update_receive_point()
                     db.session.add(submission)
                     db.session.commit()

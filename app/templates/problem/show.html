@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="span12">
+<div class="row">
     <div class="row-fluid">
     {% for message in form.user_id.errors %}
       <div class="alert alert-danger">{{ message }}</div>
@@ -17,60 +17,128 @@
     {% for message in form.csrf_token.errors %}
       <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
-        <div class="col-lg-9">
+        <div class="col-lg-6">
             <div class="text-center">
                 <h3>{{ problem.get_name(g.user) }}</h3>
                 <p><b>Contest: </b><a href="{{ url_for('contest.show', contest_id=problem.contest.id) }}">{{ problem.contest.name }}</a></p>
-                <p>
-                    <b>Rank: </b>{{ problem.get_rank_text() }}
-                    <br/>
-                    <b>Starting point: </b>{{ problem.starting_point }}
-                    <br/>
-                    <b>Wrong answer decreased point: </b>{{ problem.wrong_answer_decreased_point }}
-                    <br/>
-                    <b>Slowly decreased interval: </b>{{ problem.slowly_decreased_interval }}
-                    <br/>
-                    <b>Number of test cases: </b>{{ problem.get_testcase_nums() }}
-                    <br/>
-                    <b>Limited time: </b>{{ problem.limited_time }} ms
-                    <br/>
-                    <b>Limited memory: </b>{{ problem.limited_memory }} KB
-                    <br/>
-                    <b>Limited source size: </b>{{ problem.limited_source_size }} bytes
-                    <br/>
-                </p>
             </div>
-            <h3>Hints</h3>
-            {% if problem.hints.filter_by(is_open=True).all()|length %}
-            <ol>
-            {% for hint in problem.hints %}
-              <li>{{ hint.description|safe }}</li>
-            {% endfor %}
-            </ol>
-            {% else %}
-            <p> No hint yet !</p>
-            {% endif %}
             <h3>Content:</h3>
             {{ problem.get_content(g.user)|safe }}
         </div>
-        <div class="col-lg-3">
-            {% if g.user and g.user.is_authenticated() %}
-            <h3>Submit</h3>
-            <div>
-                <form method=POST enctype=multipart/form-data action="">
-                <p><label>Language:</label> {{ form.language }}</p>
-                {{ form.code }}
-                {{ form.csrf_token }}
-                <input name="user_id" type="hidden" value="{{ g.user.id }}">
-                <input name="problem_id" type="hidden" value="{{ problem.id }}">
-                <br>
-                {{ form.submit(class='btn btn-primary') }}
-                </form>
-            </div>
-            {% if problem.contest.is_ended() %}
-            <h3>Contest ended!</h3>
-            {% endif %}
-            {% endif %}
+        <div class="col-lg-6">
+        {% if g.user and g.user.is_authenticated() %}
+        <h3>Code Editor</h3>
+        Check here for how to input and output: <a href="{{ url_for('howto') }}">How to</a>
+        <form action="" method="POST">
+        <select name="language" id="mode">
+          {% for id, name in SUBMISSION.LANGUAGES.items() %}
+          <option value="{{ id }}" mode="{{ SUBMISSION.CODEMIRROR_MODES[id] }}" mime="{{ SUBMISSION.CODEMIRROR_MIMES[id] }}">{{ name }}</option>
+          {% endfor %}
+        </select>
+        Select a theme: <select onchange="selectTheme()" id="select">
+          <option selected>default</option>
+          <option>3024-day</option>
+          <option>3024-night</option>
+          <option>abcdef</option>
+          <option>ambiance</option>
+          <option>base16-dark</option>
+          <option>base16-light</option>
+          <option>bespin</option>
+          <option>blackboard</option>
+          <option>cobalt</option>
+          <option>colorforth</option>
+          <option>dracula</option>
+          <option>eclipse</option>
+          <option>elegant</option>
+          <option>erlang-dark</option>
+          <option>hopscotch</option>
+          <option>icecoder</option>
+          <option>isotope</option>
+          <option>lesser-dark</option>
+          <option>liquibyte</option>
+          <option>material</option>
+          <option>mbo</option>
+          <option>mdn-like</option>
+          <option>midnight</option>
+          <option>monokai</option>
+          <option>neat</option>
+          <option>neo</option>
+          <option>night</option>
+          <option>paraiso-dark</option>
+          <option>paraiso-light</option>
+          <option>pastel-on-dark</option>
+          <option>railscasts</option>
+          <option>rubyblue</option>
+          <option>seti</option>
+          <option>solarized dark</option>
+          <option>solarized light</option>
+          <option>the-matrix</option>
+          <option>tomorrow-night-bright</option>
+          <option>tomorrow-night-eighties</option>
+          <option>ttcn</option>
+          <option>twilight</option>
+          <option>vibrant-ink</option>
+          <option>xq-dark</option>
+          <option>xq-light</option>
+          <option>yeti</option>
+          <option>zenburn</option>
+        </select>
+        <textarea name="code" id="codeArea" cols="30" rows="30"></textarea>
+        <script>
+        function htmlDecode(input){
+          var e = document.createElement('div');
+          e.innerHTML = input;
+          return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+        }
+
+        var editor = CodeMirror.fromTextArea(codeArea, {
+          lineNumbers: true,
+          styleActiveLine: true,
+          matchBrackets: true,
+        });
+
+        editor.setValue(htmlDecode("{{ old_code }}"));
+
+        $(document).ready(function() {
+          editor.setOption("mode", "{{ old_mime }}");
+          CodeMirror.autoLoadMode(editor, "{{ old_mode }}");
+          $('#mode').val($('#mode').find("[mime='{{ old_mime }}']").val());
+        });
+
+        $('#mode').change(function(){
+          var opt = $('option:selected', this);
+          editor.setOption("mode", opt.attr('mime'));
+          CodeMirror.autoLoadMode(editor, opt.attr('mode'));
+        });
+
+        function selectTheme() {
+          var theme = input.options[input.selectedIndex].textContent;
+          editor.setOption("theme", theme);
+          location.hash = "#" + theme;
+        }
+
+        var input = document.getElementById("select");
+        var choice = (location.hash && location.hash.slice(1)) ||
+                     (document.location.search &&
+                      decodeURIComponent(document.location.search.slice(1)));
+        if (choice) {
+          input.value = choice;
+          editor.setOption("theme", choice);
+        }
+        CodeMirror.on(window, "hashchange", function() {
+          var theme = location.hash.slice(1);
+          if (theme) { input.value = theme; selectTheme(); }
+        });
+         </script>
+        {{ form.csrf_token }}
+        {{ form.submit(class='btn btn-primary') }}
+        {{ form.user_id(value=g.user.id) }}
+        {{ form.problem_id(value=problem.id) }}
+        </form>
+        {% if problem.contest.is_ended() %}
+          <h3>Contest ended!</h3>
+        {% endif %}
+        {% endif %}
         </div>
     </div>
 </div>
@@ -81,8 +149,8 @@
     <table class="table table-bordered" id="submissions-table">
     <thead>
       <tr>
-          <th>ID</th>
-          <th>User</th>
+        <th>ID</th>
+        <th>User</th>
         <th>Problem</th>
         <th>Language</th>
         <th>State</th>
@@ -139,4 +207,64 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/codemirror/lib/codemirror.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/clike/clike.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/ruby/ruby.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/php/php.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/javascript/javascript.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/python/python.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/go/go.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/mode/perl/perl.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/addon/mode/loadmode.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/addon/edit/matchbrackets.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codemirror/addon/selection/active-line.js') }}"></script>
+{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/codemirror.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/3024-day.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/3024-night.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/abcdef.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/ambiance.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/base16-dark.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/bespin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/base16-light.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/blackboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/cobalt.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/colorforth.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/dracula.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/eclipse.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/elegant.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/erlang-dark.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/hopscotch.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/icecoder.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/isotope.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/lesser-dark.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/liquibyte.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/material.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/mbo.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/mdn-like.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/midnight.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/monokai.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/neat.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/neo.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/night.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/paraiso-dark.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/paraiso-light.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/pastel-on-dark.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/railscasts.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/rubyblue.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/seti.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/solarized.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/the-matrix.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/tomorrow-night-bright.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/tomorrow-night-eighties.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/ttcn.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/twilight.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/vibrant-ink.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/xq-dark.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/xq-light.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/yeti.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/zenburn.css') }}">
 {% endblock %}

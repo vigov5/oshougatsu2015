@@ -18,8 +18,8 @@ class Submission(db.Model):
     used_time = db.Column(db.Integer, default=0)
     used_memory = db.Column(db.Integer, default=0)
     received_point = db.Column(db.Integer, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     failed_test_case_result = db.Column(db.String(255))
 
     def __init__(self, problem_id, user_id, language):
@@ -84,7 +84,7 @@ class Submission(db.Model):
             source_code_folder = os.path.join(app.config['SUBMISSION_FOLDER'], self.get_source_prefix())
             os.system("mkdir -p %s" % source_code_folder)
             f = open(os.path.join(source_code_folder, self.get_source_name()), 'w')
-            f.write(source_code.read())
+            f.write(source_code)
             return True
         except Exception, e:
             print e

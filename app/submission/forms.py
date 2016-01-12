@@ -1,6 +1,7 @@
 from flask_wtf import Form
-from wtforms import validators, SubmitField, SelectField, HiddenField
+from wtforms import validators, SubmitField, SelectField, HiddenField, TextAreaField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms.widgets import TextArea
 
 from app import code_upload_set
 from app.user.models import User
@@ -13,10 +14,8 @@ class CreateSubmissionForm(Form):
     problem_id = HiddenField('problem_id')
     submit = SubmitField('Submit')
     language = SelectField('Language', choices=[(str(k), v) for k, v in SUBMISSION.LANGUAGES.items()])
-    code = FileField('code', validators=[
-        FileRequired(),
-        FileAllowed(code_upload_set, 'Supported extensions only (%s)' % ', '.join(SUBMISSION.LANG_EXTENSIONS.values()))
-    ])
+    code = TextAreaField('Code', widget=TextArea())
+
 
     def __init__(self, current_user, current_problem, *args, **kwargs):
         if current_user.is_authenticated():
@@ -25,6 +24,7 @@ class CreateSubmissionForm(Form):
             self.current_user_id = None
         self.current_problem_id = current_problem.id
         Form.__init__(self, *args, **kwargs)
+
 
     def validate(self):
         if not Form.validate(self):
