@@ -1,15 +1,17 @@
 # Problem rank
 
-RANK_A = 4
-RANK_B = 3
-RANK_C = 2
-RANK_D = 1
-RANK_E = 0
+RANK_EASY = 0
+RANK_HARD = 1
 
 RANKS = {
-	RANK_A: 'A',
-	RANK_B: 'B',
-	RANK_C: 'C',
-	RANK_D: 'D',
-	RANK_E: 'E'
+	RANK_EASY: 'Easy',
+	RANK_HARD: 'Hard'
+}
+
+CATEGORY_CODE = 1
+CATEGORY_GAME = 2
+
+CATEGORIES = {
+	CATEGORY_GAME: 'Game',
+	CATEGORY_CODE: 'Code'
 }

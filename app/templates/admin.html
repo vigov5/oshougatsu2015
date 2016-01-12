@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row-fluid">
+<div>
+  <a class="btn btn-success btn-large" href="{{ url_for('contest.generate') }}">Generate New Contest</a>
+</div>
+<br>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Name (Number of submissons)</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%- for contest in contests -%}
+    <tr>
+      <td>
+        <a href="{{ url_for('contest.show', contest_id=contest.id) }}">{{ contest.name }} <span class="badge">{{ contest.submissions_count() }}</span></a>
+      </td>
+      <td>
+        {% if contest.is_ended() %}
+        <span class="label label-default">::: ENDED :::</span>
+        {% elif contest.is_running() %}
+        <span class="label label-info">!!! ON AIR !!!</span>
+        {% elif not contest.is_started() %}
+        <span class="label label-warning">::: PENDING :::</span>
+        {% endif %}
+      </td>
+      <td>
+        <a class="btn btn-success btn-xs" href="{{ url_for('contest.start_now', contest_id=contest.id) }}">Start Now</a>
+        <a class="btn btn-success btn-xs" href="{{ url_for('contest.end_now', contest_id=contest.id) }}">End Now</a>
+      </td>
+    </tr>
+    {%- endfor -%}
+  </tbody>
+</table>
+</div>
+{% endblock %}

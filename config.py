@@ -4,7 +4,7 @@ from app.submission import constants as SUBMISSION
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-SQLALCHEMY_DATABASE_URI = 'mysql://fcc_admin:fcc_admin@localhost/fcc'
+SQLALCHEMY_DATABASE_URI = 'mysql://fcc_admin:fcc_admin@localhost/bk'
 
 CSRF_ENABLED = True
 SECRET_KEY = 'place_your_secret_here'
@@ -32,8 +32,7 @@ MAIL_SENDERS = {
 
 ADMINS = [
 	'nguyen.anh.tien@framgia.com',
-	'nguyen.dang.huy@framgia.com',
-	'le.hoai.phuong@framgia.com'
+	'tran.ba.trong@framgia.com'
 ]
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
@@ -46,3 +45,6 @@ PAYLOAD_FOLDER = os.path.join(basedir, 'payload')
 
 UPLOADED_CODE_DEST = os.path.join(basedir, 'tmp')
 UPLOADED_FILES_ALLOW = SUBMISSION.LANG_EXTENSIONS.values()
+
+
+CONTEST_DURATION = 15

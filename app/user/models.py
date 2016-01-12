@@ -12,6 +12,7 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False, default='')
+    student_id = db.Column(db.String(255), nullable=False, default='')
     encrypted_password = db.Column(db.String(255), nullable=False, default='')
     reset_password_token = db.Column(db.String(255), unique=True, default='')
     reset_password_sent_at = db.Column(db.DateTime)
@@ -28,8 +29,9 @@ class User(db.Model):
     submissions = db.relationship(Submission, backref='user', lazy='dynamic')
     scores = db.relationship(UserScore, backref='user', lazy='dynamic')
 
-    def __init__(self, email, password):
+    def __init__(self, email, student_id, password):
         self.email = email.lower()
+        self.student_id = student_id
         self.set_password(password)
         self.reset_password_token = generate_token()
         self.updated_at = datetime.datetime.now()

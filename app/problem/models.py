@@ -10,6 +10,7 @@ class Problem(db.Model):
     __tablename__ = 'problems'
     id = db.Column(db.Integer, primary_key=True)
     contest_id = db.Column(db.Integer, db.ForeignKey('contests.id'))
+    category = db.Column(db.Integer, default=PROBLEM.CATEGORY_CODE)
     name_vi = db.Column(db.String(255))
     name_en = db.Column(db.String(255))
     content_vi = db.Column(db.Text)
@@ -29,6 +30,9 @@ class Problem(db.Model):
 
     def get_rank_text(self):
         return PROBLEM.RANKS[self.rank]
+
+    def get_category_text(self):
+        return PROBLEM.CATEGORIES[self.category]
 
     def get_name(self, user):
         if user and user.is_authenticated():

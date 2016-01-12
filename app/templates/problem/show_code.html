@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
+<div class="row table-container">
     <div class="row-fluid">
     {% for message in form.user_id.errors %}
       <div class="alert alert-danger">{{ message }}</div>
@@ -17,72 +17,25 @@
     {% for message in form.csrf_token.errors %}
       <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
-        <div class="col-lg-6">
+        <div class="left-side col-lg-6">
             <div class="text-center">
                 <h3>{{ problem.get_name(g.user) }}</h3>
                 <p><b>Contest: </b><a href="{{ url_for('contest.show', contest_id=problem.contest.id) }}">{{ problem.contest.name }}</a></p>
             </div>
-            <h3>Content:</h3>
             {{ problem.get_content(g.user)|safe }}
         </div>
-        <div class="col-lg-6">
+        <div class="right-side col-lg-6">
         {% if g.user and g.user.is_authenticated() %}
-        <h3>Code Editor</h3>
-        Check here for how to input and output: <a href="{{ url_for('howto') }}">How to</a>
+        <h3>Phần nhập code</h3>
+        <a href="{{ url_for('howto') }}">Làm thế nào để submit code?</a>
+        <hr>
         <form action="" method="POST">
-        <select name="language" id="mode">
+        Chọn ngôn ngữ <select name="language" id="mode">
           {% for id, name in SUBMISSION.LANGUAGES.items() %}
           <option value="{{ id }}" mode="{{ SUBMISSION.CODEMIRROR_MODES[id] }}" mime="{{ SUBMISSION.CODEMIRROR_MIMES[id] }}">{{ name }}</option>
           {% endfor %}
         </select>
-        Select a theme: <select onchange="selectTheme()" id="select">
-          <option selected>default</option>
-          <option>3024-day</option>
-          <option>3024-night</option>
-          <option>abcdef</option>
-          <option>ambiance</option>
-          <option>base16-dark</option>
-          <option>base16-light</option>
-          <option>bespin</option>
-          <option>blackboard</option>
-          <option>cobalt</option>
-          <option>colorforth</option>
-          <option>dracula</option>
-          <option>eclipse</option>
-          <option>elegant</option>
-          <option>erlang-dark</option>
-          <option>hopscotch</option>
-          <option>icecoder</option>
-          <option>isotope</option>
-          <option>lesser-dark</option>
-          <option>liquibyte</option>
-          <option>material</option>
-          <option>mbo</option>
-          <option>mdn-like</option>
-          <option>midnight</option>
-          <option>monokai</option>
-          <option>neat</option>
-          <option>neo</option>
-          <option>night</option>
-          <option>paraiso-dark</option>
-          <option>paraiso-light</option>
-          <option>pastel-on-dark</option>
-          <option>railscasts</option>
-          <option>rubyblue</option>
-          <option>seti</option>
-          <option>solarized dark</option>
-          <option>solarized light</option>
-          <option>the-matrix</option>
-          <option>tomorrow-night-bright</option>
-          <option>tomorrow-night-eighties</option>
-          <option>ttcn</option>
-          <option>twilight</option>
-          <option>vibrant-ink</option>
-          <option>xq-dark</option>
-          <option>xq-light</option>
-          <option>yeti</option>
-          <option>zenburn</option>
-        </select>
+        <hr>
         <textarea name="code" id="codeArea" cols="30" rows="30"></textarea>
         <script>
         function htmlDecode(input){
@@ -97,12 +50,29 @@
           matchBrackets: true,
         });
 
+        var problem_show = true;
+
         editor.setValue(htmlDecode("{{ old_code }}"));
 
         $(document).ready(function() {
+          editor.setOption("theme", "monokai");
           editor.setOption("mode", "{{ old_mime }}");
           CodeMirror.autoLoadMode(editor, "{{ old_mode }}");
           $('#mode').val($('#mode').find("[mime='{{ old_mime }}']").val());
+          $("#toggle-pro").click(function() {
+            console.log(problem_show);
+            if (problem_show) {
+              $(".left-side").hide();
+              $(".right-side").addClass("col-lg-12");
+              $(".right-side").removeClass("col-lg-6");
+              problem_show = false;
+            } else {
+              $(".left-side").show();
+              $(".right-side").addClass("col-lg-6");
+              $(".right-side").removeClass("col-lg-12");
+              problem_show = true;
+            }
+          });
         });
 
         $('#mode').change(function(){
@@ -113,7 +83,7 @@
 
         function selectTheme() {
           var theme = input.options[input.selectedIndex].textContent;
-          editor.setOption("theme", theme);
+          editor.setOption("theme", "monokai");
           location.hash = "#" + theme;
         }
 
@@ -131,7 +101,9 @@
         });
          </script>
         {{ form.csrf_token }}
+        <hr>
         {{ form.submit(class='btn btn-primary') }}
+        <div id="toggle-pro" class="btn btn-primary">SHOW/HIDE PROBLEM</div>
         {{ form.user_id(value=g.user.id) }}
         {{ form.problem_id(value=problem.id) }}
         </form>
@@ -142,11 +114,12 @@
         </div>
     </div>
 </div>
+<hr>
 {% if g.user and g.user.is_authenticated(): %}
-<div class="col-lg-12">
+<div class="col-lg-12  table-container">
     <div class="row-fluid">
-    <h1>My submissions</h1>
-    <table class="table table-bordered" id="submissions-table">
+    <h1>Submition Log</h1>
+    <table class="table" id="submissions-table">
     <thead>
       <tr>
         <th>ID</th>

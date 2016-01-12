@@ -9,6 +9,7 @@ from app.problem.models import Problem
 from app.submission.models import Submission
 from app.submission.forms import CreateSubmissionForm
 from app.submission import constants as SUBMISSION
+from app.problem import constants as PROBLEM
 
 
 problem_module = Blueprint('problem', __name__)
@@ -23,6 +24,9 @@ def show(problem_id):
                 return redirect(url_for('index'))
         else:
             return redirect(url_for('index'))
+
+    if problem.category == PROBLEM.CATEGORY_GAME:
+        return render_template('problem/show_game.html', problem=problem)
 
     if g.user and g.user.is_authenticated():
         my_submissions = g.user.submissions.filter_by(problem_id=problem.id).order_by(Submission.id.desc()).all()
@@ -56,7 +60,7 @@ def show(problem_id):
             form.code.errors.append("Can't save source code file")
         return redirect(url_for('problem.show', problem_id=problem.id))
 
-    return render_template('problem/show.html', problem=problem, form=form, my_submissions=my_submissions, SUBMISSION=SUBMISSION, old_code=old_code, old_mime=old_mime, old_mode=old_mode)
+    return render_template('problem/show_code.html', problem=problem, form=form, my_submissions=my_submissions, SUBMISSION=SUBMISSION, old_code=old_code, old_mime=old_mime, old_mode=old_mode)
 
 
 class ProblemView(ModelView):
@@ -64,7 +68,12 @@ class ProblemView(ModelView):
     column_default_sort = ('id', True)
 
     # Override displayed fields
-    column_list = ('id', 'contest.name', 'name_en', 'name_vi', 'rank')
+    column_list = ('id', 'contest.name', 'category', 'name_en', 'name_vi', 'rank')
+
+    column_choices = {
+        'rank': PROBLEM.RANKS.items(),
+        'category': PROBLEM.CATEGORIES.items()
+    }
 
     form_excluded_columns = ('submissions', 'created_at', 'updated_at')
 

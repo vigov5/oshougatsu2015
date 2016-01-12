@@ -14,12 +14,9 @@ class SignupForm(Form):
         validators.Required('Please enter your email address.'),
         validators.Email('Please enter your email address.')
     ])
-    password = PasswordField('Password', [
-        validators.Required('Please enter a password.'),
-        validators.Length(min=6, message='Passwords is at least 6 characters.'),
-        validators.EqualTo('confirm', message='Passwords must match')
+    student_id = TextField('Student ID', [
+        validators.Required('Please enter your student id'),
     ])
-    confirm = PasswordField('Repeat Password')
     submit = SubmitField('Create account')
 
     def __init__(self, *args, **kwargs):
@@ -32,6 +29,11 @@ class SignupForm(Form):
         email = User.query.filter_by(email=self.email.data).first()
         if email:
             self.email.errors.append('That email is already taken.')
+            return False
+
+        student_id = User.query.filter_by(student_id=self.student_id.data).first()
+        if student_id:
+            self.student_id.errors.append('That student ID is already taken.')
             return False
 
         return True

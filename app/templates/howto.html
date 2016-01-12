@@ -1,88 +1,42 @@
 {% extends "base.html" %}
 {% block js %}
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert"></script>
 {% endblock %}
 {% block content %}
-<div class="row-fluid">
-<h1>How to submit code ?</h1>
-<p>Your need an account to be able to submit code. Please <a href="{{ url_for('user.signup') }}">sign up</a> or <a href="{{ url_for('user.login') }}">log in</a>.<br>Let's look at this simple example problem:</p>
-<h3>Content:</h3>
-<p>Give 2 integer numbers a and b. Write a program that output the sum of a and b</p>
+<div class="row-fluid table-container">
+<h2>Ví dụ về cách làm bài code</h2>
+<h3>Đề bài mẫu</h3>
+<p>Viết chương trình tính tổng hai số.</p>
     <div>
       <dl>
         <dt>
           Input
         </dt>
         <dd>
-          The first and the only line of the input contains two distinct integers a and b, separated by a space.
+          Một dòng duy nhất chứa hai số a và b, phân cách nhau bởi dấu cách.
         </dd><dt>
           Output
         </dt>
         <dd>
-          Print a single number — the sum of a and b
+          In ra một số là tổng của a và b.
         </dd>
         <br>
-        <dt>
-          Sample test(s)
-        </dt>
+<h3>Một vài test case mẫu</h3>
         <dd>
-          <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>input</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-                <td>
-                  <pre>4 6</pre>
-                </td>
-            </tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>output</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-                <td>
-                  <pre>10</pre>
-                </td>
-            </tr>
-          </tbody>
-          </table>
-          <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>input</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-                <td>
-                  <pre>10 -10</pre>
-                </td>
-            </tr>
-          </tbody>
-          <thead>
-            <tr>
-              <th>output</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-                <td>
-                  <pre>0</pre>
-                </td>
-            </tr>
-          </tbody>
-          </table>
+          <h5>input</h5>
+          <pre>4 6</pre>
+          <h5>output</h5>
+          <pre>10</pre>
+          <hr>
+          <h5>input</h5>
+          <pre>10 -10</pre>
+          <h5>output</h5>
+          <pre>0</pre>
         </dd>
       </dl>
     </div>
-<h2>Example submisssions</h2>
-Please see below examples to understanding how to read from standard input and write to standard output. <br>Your output must be strictly the same as the output of testcases.
+<h3>Ví dụ về code trên từng ngôn ngữ</h3>
+Hãy đọc kỹ để biết cách nhập input và cách in ra output tiêu chuẩn cho từng ngôn ngữ. Output chỉ được chấp nhận khi nó hoàn toàn giống output của các test cases.
 <h3>Python</h3>
 <p>
 <pre class="prettyprint">a, b = map(int, raw_input().split())
@@ -184,7 +138,6 @@ chomp $line;
 print $a + $b;
 </pre>
 </p>
-</div>
 
 <h3>JavaScript (NodeJS)</h3>
 <p>
@@ -205,6 +158,7 @@ rl.on('line', function(line){
 })
 </pre>
 </p>
+</div>
 </div>
 
 {% endblock %}

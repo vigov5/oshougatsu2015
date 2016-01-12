@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="row-fluid">
+      <center><embed class="game-border" width="600" height="480" style="z-index:99" src="/static/files/{{ problem.content_en }}.swf"></center>
+    </div>
+</div>
+<hr>
+<div class="col-lg-12  table-container">
+    <div class="row-fluid">
+    {{ problem.content_vi|safe }}
+    </div>
+</div>
+{% endblock %}

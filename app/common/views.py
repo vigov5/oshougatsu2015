@@ -29,29 +29,31 @@ def page_not_found(e):
 @app.route('/index')
 @menu.register_menu(app, '.index', 'Home', order=0)
 def index():
-    contests = Contest.query.order_by(Contest.id.desc()).all()
+    contest = Contest.query.order_by(Contest.id.desc()).first()
     return render_template(
         'index.html',
-        contests=contests
+        contest=contest
     )
 
 
 @app.route('/')
 @app.route('/scoreboard')
-@menu.register_menu(app, '.scoreboard', 'Score Board', order=1)
 def scoreboard():
-    users = User.query.all()
-    raw = {}
-    for user in users:
+    raw = []
+    for user in User.query.all():
         for submission in user.submissions:
             if submission.is_accepted():
                 if not raw.has_key(submission.user.email):
                     raw[submission.user.email] = 0
                 raw[submission.user.email] += submission.received_point
 
-    summary = [(email, total_score) for email, total_score in raw.items()]
-    summary = sorted(summary, key=lambda x: x[1], reverse=True)
-    max_score = summary[0][1]
+    if raw:
+        summary = [(email, total_score) for email, total_score in raw.items()]
+        summary = sorted(summary, key=lambda x: x[1], reverse=True)
+        max_score = summary[0][1]
+    else:
+        max_score = 0
+        summary = []
 
     return render_template(
         'scoreboard.html',
@@ -63,3 +65,11 @@ def scoreboard():
 @menu.register_menu(app, '.howto', 'How to', order=2)
 def howto():
     return render_template('howto.html')
+
+@app.route('/admin')
+def admin():
+    contests = Contest.query.order_by(Contest.id.desc()).all()
+    return render_template(
+        'admin.html',
+        contests=contests
+    )
