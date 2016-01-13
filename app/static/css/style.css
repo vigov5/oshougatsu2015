@@ -45,4 +45,9 @@ body {
 
 .game-border {
   border: #555555 5px solid;
+  background-color: white;
+}
+
+.timeline dl dd .events .events-object {
+  margin-bottom: 10px;
 }

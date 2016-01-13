@@ -6,9 +6,9 @@
     </div>
 </div>
 <hr>
-<div class="col-lg-12  table-container">
-    <div class="row-fluid">
-    {{ problem.content_vi|safe }}
-    </div>
+<div class="text-center table-container">
+	<h3>{{ problem.get_name(g.user) }}</h3>
+	<p><b>Contest: </b><a href="{{ url_for('contest.show', contest_id=problem.contest.id) }}">{{ problem.contest.name }}</a></p>
+	{{ problem.get_content(g.user)|safe }}
 </div>
 {% endblock %}

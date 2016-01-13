@@ -107,9 +107,6 @@
         {{ form.user_id(value=g.user.id) }}
         {{ form.problem_id(value=problem.id) }}
         </form>
-        {% if problem.contest.is_ended() %}
-          <h3>Contest ended!</h3>
-        {% endif %}
         {% endif %}
         </div>
     </div>
@@ -118,7 +115,7 @@
 {% if g.user and g.user.is_authenticated(): %}
 <div class="col-lg-12  table-container">
     <div class="row-fluid">
-    <h1>Submition Log</h1>
+    <h1>Submission Log</h1>
     <table class="table" id="submissions-table">
     <thead>
       <tr>
@@ -129,8 +126,6 @@
         <th>State</th>
         <th>Result status</th>
         <th>Last passed test case</th>
-        <th>Used time</th>
-        <th>Used memory</th>
         <th>Received point</th>
         <th>When</th>
       </tr>
@@ -160,12 +155,6 @@
           </td>
           <td>
             {{ submission.last_passed_test_case }}
-          </td>
-          <td>
-            {{ submission.used_time }} ms
-          </td>
-          <td>
-            {{ submission.used_memory }} KB
           </td>
           <td>
             {{ submission.received_point }}

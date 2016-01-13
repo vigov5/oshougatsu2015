@@ -1,6 +1,113 @@
 {% extends "base.html" %} {% block content %}
 <div class="row-fluid">
     <div class="span12">
+	<div class="row clearfix">
+	    <div class="col-md-10 col-md-offset-1">
+	    	<table contenteditable="true" class="table table-container">
+	    		<tr>
+	    			{% for user, point in raw %}
+	    			<td id="user_{{ user.id }}"> {{ user.email }} <span class="badge">{{ point }}</span></td>
+	    			{% endfor %}
+	    		</tr>
+	    	</table>
+	        <div class="timeline">
+	            <dl>
+	                <dt>Now</dt>
+	                {% for activity in activities %}
+	                <dd data-id="{{ activity.id }}" class="pos-{{ loop.cycle('left', 'right') }} clearfix">
+	                    <div class="circ"></div>
+	                    <div class="time">{{ activity.created_at.strftime('%b %d %H:%M') }}</div>
+	                    <div class="events">
+	                        <div class="pull-left">
+	                        	{% if activity.state == 'queued' %}
+	                        	<img class="events-object img-rounded" src="/static/images/running.gif">
+	                        	{% else %}
+	                        		{% if activity.is_accepted() %}
+                        		<img class="events-object img-rounded" src="/static/images/true.png">
+	                        		{% else %}
+	                        	<img class="events-object img-rounded" src="/static/images/false.png">
+	                        		{% endif %}
+	                        	{% endif %}	
+	                        </div>
+	                        <div class="events-body">
+	                            <h4 class="events-heading">{{ activity.user.email }}</h4>
+	                            {% if activity.state == 'queued' %}
+	                            <p> submitted solution for <a href="{{ url_for('problem.show', problem_id=activity.problem.id) }}">{{ activity.problem.name_en }}</a></p>
+	                            {% else %}
+									{% if activity.is_accepted() %}
+	                            <p> solved <a href="{{ url_for('problem.show', problem_id=activity.problem.id) }}">{{ activity.problem.name_en }}</a> and scored <strong>{{ activity.received_point 
+	                            }}</strong> points</p>
+	                            	{% else %}
+	                            <p> failed to solve <a href="{{ url_for('problem.show', problem_id=activity.problem.id) }}">{{ activity.problem.name_en }}</a> and scored <strong>{{ activity.received_point }}
+	                            	{% endif %}
+	                            {% endif %}
+	                        </div>
+	                    </div>
+	                </dd>
+	                {% endfor %}
+	                <dt>Start</dt>
+	            </dl>
+	        </div>
+	    </div>
+	</div>
+	<div style="display: none" id="one-activity-dom">
+	  <dd class="">
+	      <div class="circ"></div>
+	      <div class="time"></div>
+	      <div class="events">
+	          <div class="pull-left">
+	          	<img class="events-object img-rounded" src="">
+	          </div>
+	          <div class="events-body">
+	              <h4 class="events-heading"></h4>
+	              <p></p>
+	          </div>
+	      </div>
+	  </dd>
+	</div>
+	<script>
+	function check() {
+	  var lastSide = "right";
+	  if ($("dd").first().attr("class").indexOf("right") == -1) {
+	    lastSide = "left";
+	  }
+      var lastId = $("dd").first().data("id");
+      if (!lastId) {
+      	lastId = 1;
+      }
+      $.post("activities/more", {side: lastSide, id: lastId}).done(function(data) {
+          $.each(data['result'], function(index, value) {
+          	if (value['type'] == 'new') {
+          		var html = change_activity($("#one-activity-dom"), value);
+          		if ($("dd").length == 1) {
+          			$("dt").last().before(html);
+          		} else {
+             		$("dd").first().before(html);
+          		}
+          	} else {
+             	change_activity($("[data-id=" + value['id'] + "]"), value);
+          	}
+    	});
+        setTimeout(function(){ check() }, 5000);
+      });
+    }
+
+    check();
+
+	function change_activity(dom, data){
+		dom.find(".time").text(data['time']);
+		dom.find(".time").text(data['time']);
+		dom.find("dd").attr('data-id', data['id']);
+		dom.find("dd").attr('class', data['class']);
+		dom.find(".events-heading").html(data['header']);
+		dom.find(".img-rounded").attr('src', data['result']);
+		dom.find("p").html(data['footer']);
+		return dom.html();
+	}
+	</script>
     </div>
 </div>
+{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/site.min.css') }}">
 {% endblock %}

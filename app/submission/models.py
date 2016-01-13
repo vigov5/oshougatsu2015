@@ -3,6 +3,7 @@ import datetime
 
 from app import app, db
 from app.submission import constants as SUBMISSION
+from app.problem.models import Problem
 
 
 class Submission(db.Model):

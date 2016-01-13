@@ -89,6 +89,15 @@ class User(db.Model):
     def  get_locale_text(self):
         return USER.LOCALES[self.locale]
 
+    def get_total_score(self):
+        total = 0
+        solved = []
+        for submission in self.submissions:
+            if submission.is_accepted() and submission.problem not in solved:
+                total += int(submission.received_point)
+
+        return total
+
 
 class UserForgotPassword(db.Model):
 
@@ -110,3 +119,20 @@ class UserForgotPassword(db.Model):
 
     def is_expired(self):
         return datetime.datetime.now() >= self.expire_at
+
+
+class UserJoin(db.Model):
+
+    __tablename__ = 'user_join'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    contest_id = db.Column(db.Integer, db.ForeignKey('contests.id'))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+
+
+    user = db.relationship('User', backref=db.backref('join', lazy='dynamic', cascade='all'))
+    contest = db.relationship('Contest', backref=db.backref('join', lazy='dynamic', cascade='all'))
+
+    def __init__(self, user, contest):
+        self.user = user
+        self.contest = contest

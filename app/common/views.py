@@ -1,13 +1,15 @@
-from flask import render_template, g
-from flask_login import current_user
+from flask import render_template, g, request, url_for, jsonify, redirect
+from flask_login import current_user, login_required
 import flask_menu as menu
+from sqlalchemy import desc, asc
 
 from app import app, lm
-from app.user.models import User
+from app.user.models import User, UserJoin
 from app.contest.models import Contest
 from app.submission.models import Submission
 from app.common.tasks import run_code
 from app.common.utils import generate_random_string
+from app.problem import constants as PROBLEM
 
 
 @app.before_request
@@ -38,27 +40,22 @@ def index():
 
 @app.route('/')
 @app.route('/scoreboard')
+@login_required
 def scoreboard():
-    raw = []
-    for user in User.query.all():
-        for submission in user.submissions:
-            if submission.is_accepted():
-                if not raw.has_key(submission.user.email):
-                    raw[submission.user.email] = 0
-                raw[submission.user.email] += submission.received_point
+    contest = Contest.query.order_by(Contest.id.desc()).first()
+    if not contest:
+        return redirect(url_for('index'))
+    activities = Submission.query.order_by(desc(Submission.created_at)).all()
 
-    if raw:
-        summary = [(email, total_score) for email, total_score in raw.items()]
-        summary = sorted(summary, key=lambda x: x[1], reverse=True)
-        max_score = summary[0][1]
-    else:
-        max_score = 0
-        summary = []
+    joins = UserJoin.query.filter_by(contest_id=contest.id).all()
+    raw = []
+    for join in joins:
+        raw.append((join.user, join.user.get_total_score()))
 
     return render_template(
         'scoreboard.html',
-        max_score=max_score,
-        summary=summary
+        activities=activities,
+        raw=raw
     )
 
 @app.route('/howto')
@@ -73,3 +70,48 @@ def admin():
         'admin.html',
         contests=contests
     )
+
+
+@app.route('/activities/more', methods=['POST'])
+def more_activities():
+    last_side = request.form.get('side', 'left')
+    last_id = request.form.get('id')
+    activities = Submission.query.filter(Submission.id >= last_id).order_by(desc(Submission.created_at)).limit(2).all()
+    resp = []
+    for activity in activities:
+        last_side = 'right' if last_side == 'left' else 'left'
+        element = {
+            'class': 'pos-%s clearfix' % last_side,
+            'id': activity.id,
+            'time': activity.created_at.strftime('%b %d %H:%M'),
+            'header': u"%s" % activity.user.email
+        }
+
+        element['result'] = u'/static/images/running.gif'
+
+        if activity.problem.category == PROBLEM.CATEGORY_CODE:
+            if int(activity.id) == int(last_id):
+                element['type'] = 'update'
+            else:
+                element['type'] = 'new'
+            
+            if activity.is_finished():
+                if activity.is_accepted():
+                    element['footer'] = u' solved <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('problem.show', problem_id=activity.problem.id), activity.problem.name_en, str(activity.received_point))
+                    element['result'] = u'/static/images/true.png'
+                else:
+                    element['footer'] = u' failed to solve <a href="{0:s}">{1:s}</a>'.format(url_for('problem.show', problem_id=activity.problem.id), activity.problem.name_en)
+                    element['result'] = u'/static/images/false.png'
+            else:
+                element['footer'] = u' submitted solution for <a href="{0:s}">{1:s}</a>'.format(url_for('problem.show', problem_id=activity.problem.id), activity.problem.name_en)
+
+        else:
+            element['type'] = 'update'
+            element['result'] = u'/static/images/true.png'
+            if int(activity.id) != int(last_id):
+                element['type'] = 'new'
+                element['footer'] = u' solved <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('problem.show', problem_id=activity.problem.id), activity.problem.name_en, str(activity.received_point))
+
+        resp.append(element)
+
+    return jsonify(result=resp)

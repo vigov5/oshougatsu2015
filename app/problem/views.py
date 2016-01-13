@@ -1,11 +1,13 @@
 import urllib
 
-from flask import g, Blueprint, render_template, redirect, url_for, request, session
+from flask import g, Blueprint, render_template, redirect, url_for, request, session, make_response
+from flask_login import login_user, logout_user, login_required
 from flask_admin.contrib.sqla import ModelView
 
-from app import db
+from app import app, db
 from app.common.tasks import run_code
 from app.problem.models import Problem
+from app.user.models import UserJoin
 from app.submission.models import Submission
 from app.submission.forms import CreateSubmissionForm
 from app.submission import constants as SUBMISSION
@@ -14,10 +16,11 @@ from app.problem import constants as PROBLEM
 
 problem_module = Blueprint('problem', __name__)
 
-
 @problem_module.route('/<int:problem_id>', methods=['GET', 'POST'])
+@login_required
 def show(problem_id):
     problem = Problem.query.get_or_404(problem_id)
+
     if not problem.contest.is_started():
         if g.user.is_authenticated():
             if not g.user.is_admin():
@@ -25,8 +28,18 @@ def show(problem_id):
         else:
             return redirect(url_for('index'))
 
+    join = UserJoin.query.filter_by(user_id=g.user.id, contest_id=problem.contest.id).all()
+
+    if not join:
+        join = UserJoin(g.user, problem.contest)
+        db.session.add(join)
+        db.session.commit()
+
     if problem.category == PROBLEM.CATEGORY_GAME:
-        return render_template('problem/show_game.html', problem=problem)
+        response = make_response(render_template('problem/show_game.html', problem=problem))
+        response.set_cookie('problem_id', str(problem.id))
+        response.set_cookie('email', g.user.email)
+        return response
 
     if g.user and g.user.is_authenticated():
         my_submissions = g.user.submissions.filter_by(problem_id=problem.id).order_by(Submission.id.desc()).all()

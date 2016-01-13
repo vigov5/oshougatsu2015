@@ -38,8 +38,8 @@
               <li {% if item.active %}class="active"{% endif %}><a href="{{ item.url }}">{{ item.text }}</a></li>
             {% endfor -%}
             {% if g.user.is_authenticated() %}
-              <li><a href="{{ url_for('user.my_submissions', page=1) }}"> My Submissions</a></li>
               {% if g.user.is_admin() %}
+              <li><a href="{{ url_for('user.my_submissions', page=1) }}">Submissions</a></li>
               <li><a href="{{ url_for('scoreboard') }}">Scoreboard</a></li>
               <li><a href="{{ url_for('admin') }}">Admin</a></li>
               <li><a href="{{ url_for('admin.index') }}">DB</a></li>
