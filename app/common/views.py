@@ -29,6 +29,7 @@ def page_not_found(e):
 
 @app.route('/')
 @app.route('/index')
+@login_required
 @menu.register_menu(app, '.index', 'Home', order=0)
 def index():
     contest = Contest.query.order_by(Contest.id.desc()).first()
@@ -94,7 +95,7 @@ def more_activities():
                 element['type'] = 'update'
             else:
                 element['type'] = 'new'
-            
+
             if activity.is_finished():
                 if activity.is_accepted():
                     element['footer'] = u' solved <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('problem.show', problem_id=activity.problem.id), activity.problem.name_en, str(activity.received_point))
@@ -113,5 +114,14 @@ def more_activities():
                 element['footer'] = u' solved <a href="{0:s}">{1:s}</a> and scored <strong>{2:s} points</strong>'.format(url_for('problem.show', problem_id=activity.problem.id), activity.problem.name_en, str(activity.received_point))
 
         resp.append(element)
+
+    contest = Contest.query.order_by(Contest.id.desc()).first()
+    joins = UserJoin.query.filter_by(contest_id=contest.id).all()
+    for join in joins:
+        resp.append({
+            'type': 'point',
+            'user_id': join.user.id,
+            'point': join.user.get_total_score()
+        })
 
     return jsonify(result=resp)

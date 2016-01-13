@@ -13,8 +13,9 @@
             </tr>
         </thead>
         <tbody>
+            {% if contest.is_running() %}
             {%- for problem in contest.problems -%}
-            <tr>
+            <tr {% if problem.solved_by(g.user) %}class="bg-success"{% endif %}>
                 <td>
                     <a href="{{ url_for('problem.show', problem_id=problem.id) }}">{{ problem.get_name(g.user) }}</a>
                 </td>
@@ -29,6 +30,7 @@
                 </td>
             </tr>
             {%- endfor -%}
+            {% endif %}
         </tbody>
     </table>
   </div>

@@ -72,5 +72,12 @@ class Problem(db.Model):
         except Exception, e:
             return ''
 
+    def solved_by(self, user):
+        for submission in self.submissions:
+            if submission.user == user and submission.is_accepted():
+                return True
+
+        return False
+
     def __str__(self):
         return self.name_en

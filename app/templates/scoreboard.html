@@ -3,13 +3,13 @@
     <div class="span12">
 	<div class="row clearfix">
 	    <div class="col-md-10 col-md-offset-1">
-	    	<table contenteditable="true" class="table table-container">
-	    		<tr>
-	    			{% for user, point in raw %}
-	    			<td id="user_{{ user.id }}"> {{ user.email }} <span class="badge">{{ point }}</span></td>
-	    			{% endfor %}
-	    		</tr>
-	    	</table>
+	    	<div class="row">
+			{% for user, point in raw %}
+			<div id="user_{{ user.id }}" class="col-md-4 table-container">
+				{{ user.email }} <span class="label label-{{ loop.cycle('primary', 'success', 'danger') }} pull-right">{{ point }} pt</span>
+			</div>
+			{% endfor %}
+	    	</div>
 	        <div class="timeline">
 	            <dl>
 	                <dt>Now</dt>
@@ -27,7 +27,7 @@
 	                        		{% else %}
 	                        	<img class="events-object img-rounded" src="/static/images/false.png">
 	                        		{% endif %}
-	                        	{% endif %}	
+	                        	{% endif %}
 	                        </div>
 	                        <div class="events-body">
 	                            <h4 class="events-heading">{{ activity.user.email }}</h4>
@@ -77,6 +77,7 @@
       }
       $.post("activities/more", {side: lastSide, id: lastId}).done(function(data) {
           $.each(data['result'], function(index, value) {
+          	console.log(value);
           	if (value['type'] == 'new') {
           		var html = change_activity($("#one-activity-dom"), value);
           		if ($("dd").length == 1) {
@@ -84,8 +85,10 @@
           		} else {
              		$("dd").first().before(html);
           		}
-          	} else {
+          	} else if (value['type'] == 'update') {
              	change_activity($("[data-id=" + value['id'] + "]"), value);
+          	} else {
+          		$("#user_" + value['user_id']).find('span').text(value['point'] + ' pt');
           	}
     	});
         setTimeout(function(){ check() }, 5000);
