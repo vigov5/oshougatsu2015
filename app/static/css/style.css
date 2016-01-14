@@ -51,3 +51,11 @@ body {
 .timeline dl dd .events .events-object {
   margin-bottom: 10px;
 }
+
+.score-show {
+  border: none;
+}
+
+.score-label {
+  font-size: 20px;
+}

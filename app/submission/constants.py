@@ -12,7 +12,7 @@ LANG_PERL = 8
 LANGUAGES = {
 	LANG_C: 'C',
 	LANG_CPP: 'C++',
-	LANG_RUBY: 'Ruby 1.9',
+	LANG_RUBY: 'Ruby 2.0',
 	LANG_PHP: 'PHP 5.5',
 	LANG_JAVA: 'Java 7',
 	LANG_PYTHON: 'Python 2.7',

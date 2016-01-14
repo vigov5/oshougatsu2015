@@ -5,8 +5,8 @@
 	    <div class="col-md-10 col-md-offset-1">
 	    	<div class="row">
 			{% for user, point in raw %}
-			<div id="user_{{ user.id }}" class="col-md-4 table-container">
-				{{ user.email }} <span class="label label-{{ loop.cycle('primary', 'success', 'danger') }} pull-right">{{ point }} pt</span>
+			<div id="user_{{ user.id }}" class="col-md-4 table-container score-show">
+				{{ user.email.split("@")[0] }} <span class="score-label label label-{{ loop.cycle('primary', 'success', 'danger') }} pull-right">{{ point }} pt</span>
 			</div>
 			{% endfor %}
 	    	</div>
@@ -38,7 +38,7 @@
 	                            <p> solved <a href="{{ url_for('problem.show', problem_id=activity.problem.id) }}">{{ activity.problem.name_en }}</a> and scored <strong>{{ activity.received_point 
 	                            }}</strong> points</p>
 	                            	{% else %}
-	                            <p> failed to solve <a href="{{ url_for('problem.show', problem_id=activity.problem.id) }}">{{ activity.problem.name_en }}</a> and scored <strong>{{ activity.received_point }}
+	                            <p> failed to solve <a href="{{ url_for('problem.show', problem_id=activity.problem.id) }}">{{ activity.problem.name_en }}</a></p>
 	                            	{% endif %}
 	                            {% endif %}
 	                        </div>

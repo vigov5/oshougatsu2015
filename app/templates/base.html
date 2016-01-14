@@ -17,7 +17,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/checkbox.js') }}"></script>
     <script src="{{ url_for('static', filename='js/radio.js') }}"></script>
@@ -48,6 +48,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if g.user.is_authenticated() %}
+            <li><a id="remain-time" href="#"></a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ g.user.email }} <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">

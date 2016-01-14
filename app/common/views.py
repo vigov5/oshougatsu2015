@@ -41,7 +41,6 @@ def index():
 
 @app.route('/')
 @app.route('/scoreboard')
-@login_required
 def scoreboard():
     contest = Contest.query.order_by(Contest.id.desc()).first()
     if not contest:

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block js %}
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <script src="{{ url_for('static', filename='prettify/prettify.js') }}"></script>
+{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='prettify/prettify.css') }}">
 {% endblock %}
 {% block content %}
 <div class="row-fluid">
@@ -20,7 +23,8 @@
     {% else %}
       {% set last_passed_test_case = submission.last_passed_test_case %}
     {% endif %}
-  <table contenteditable="true" class="table table-bordered">
+    <div class="table-container">
+  <table contenteditable="true" class="table">
 
     <thead>
       <tr>
@@ -61,7 +65,14 @@
       </tr>
     </tbody>
   </table>
+  </div>
   {% endif %}
   </div>
 </div>
+
+<script>
+  jQuery(document).ready(function($) {
+    prettyPrint();
+  });
+</script>
 {% endblock %}

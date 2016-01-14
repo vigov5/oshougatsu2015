@@ -3,62 +3,64 @@
 {% block content %}
 <h1>My submissions</h1>
   {{ helpers.render_pagination(submissions) }}
-  <table class="table table-bordered" id="submissions-table">
-  <thead>
-    <tr>
-        <th>ID</th>
-        <th>User</th>
-      <th>Problem</th>
-      <th>Language</th>
-      <th>State</th>
-      <th>Result status</th>
-      <th>Last passed test case</th>
-      <th>Used time</th>
-      <th>Used memory</th>
-      <th>Received point</th>
-      <th>When</th>
-    </tr>
-  </thead>
-  <tbody>
-      {% for submission in submissions.items: %}
-      {% if submission.is_queued() %}
+  <div class="table-container">
+    <table class="table" id="submissions-table">
+    <thead>
       <tr>
-      {% elif submission.is_accepted() %}
-      <tr class="info">
-      {% else %}
-      <tr class="danger">
-      {% endif %}
-          <td><a href="{{ url_for('submission.show', submission_id=submission.id) }}">{{ submission.id }}</a></td>
-          <td>{{ submission.user.email }}</td>
-        <td>
-          <a href="{{ url_for('problem.show', problem_id=submission.problem.id) }}">{{ submission.problem.get_name(g.user) }}</a>
-        </td>
-        <td>
-          {{ submission.get_language_name() }}
-        </td>
-        <td>
-          <a href="{{ url_for('submission.show', submission_id=submission.id) }}">{{ submission.state }}</a>
-        </td>
-        <td>
-          {{ submission.result_status }}
-        </td>
-        <td>
-          {{ submission.last_passed_test_case }}
-        </td>
-        <td>
-          {{ submission.used_time }} ms
-        </td>
-        <td>
-          {{ submission.used_memory }} KB
-        </td>
-        <td>
-          {{ submission.received_point }}
-        </td>
-        <td>
-          {{ submission.updated_at }}
-        </td>
+          <th>ID</th>
+          <th>User</th>
+        <th>Problem</th>
+        <th>Language</th>
+        <th>State</th>
+        <th>Result status</th>
+        <th>Last passed test case</th>
+        <th>Used time</th>
+        <th>Used memory</th>
+        <th>Received point</th>
+        <th>When</th>
       </tr>
-      {% endfor %}
-  </tbody>
+    </thead>
+    <tbody>
+        {% for submission in submissions.items: %}
+        {% if submission.is_queued() %}
+        <tr>
+        {% elif submission.is_accepted() %}
+        <tr class="info">
+        {% else %}
+        <tr class="danger">
+        {% endif %}
+            <td><a href="{{ url_for('submission.show', submission_id=submission.id) }}">{{ submission.id }}</a></td>
+            <td>{{ submission.user.email }}</td>
+          <td>
+            <a href="{{ url_for('problem.show', problem_id=submission.problem.id) }}">{{ submission.problem.get_name(g.user) }}</a>
+          </td>
+          <td>
+            {{ submission.get_language_name() }}
+          </td>
+          <td>
+            <a href="{{ url_for('submission.show', submission_id=submission.id) }}">{{ submission.state }}</a>
+          </td>
+          <td>
+            {{ submission.result_status }}
+          </td>
+          <td>
+            {{ submission.last_passed_test_case }}
+          </td>
+          <td>
+            {{ submission.used_time }} ms
+          </td>
+          <td>
+            {{ submission.used_memory }} KB
+          </td>
+          <td>
+            {{ submission.received_point }}
+          </td>
+          <td>
+            {{ submission.updated_at }}
+          </td>
+        </tr>
+        {% endfor %}
+    </tbody>
     </table>
+    </div>
 {% endblock %}

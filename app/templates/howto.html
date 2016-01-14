@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block js %}
-<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert"></script>
+  <script src="{{ url_for('static', filename='prettify/prettify.js') }}"></script>
+{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='prettify/prettify.css') }}">
 {% endblock %}
 {% block content %}
 <h2>$ . example_of_submitting_code</h2>
@@ -161,4 +164,9 @@ rl.on('line', function(line){
 </div>
 </div>
 
+<script>
+  jQuery(document).ready(function($) {
+    prettyPrint();
+  });
+</script>
 {% endblock %}
