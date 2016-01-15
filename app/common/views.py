@@ -7,6 +7,7 @@ from app import app, lm
 from app.user.models import User, UserJoin
 from app.contest.models import Contest
 from app.submission.models import Submission
+from app.problem.models import Problem
 from app.common.tasks import run_code
 from app.common.utils import generate_random_string
 from app.problem import constants as PROBLEM
@@ -33,9 +34,13 @@ def page_not_found(e):
 @menu.register_menu(app, '.index', 'Home', order=0)
 def index():
     contest = Contest.query.order_by(Contest.id.desc()).first()
+    problems = []
+    if contest:
+        problems = contest.problems.order_by(Problem.rank.asc()).all()
     return render_template(
         'index.html',
-        contest=contest
+        contest=contest,
+        problems=problems
     )
 
 

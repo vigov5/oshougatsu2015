@@ -7,6 +7,7 @@ from flask.ext.admin.contrib.sqla import ModelView
 from app import db
 from app.contest.models import Contest
 from app.problem.models import Problem
+from app.submission.models import Submission
 from app.problem import constants as PROBLEM
 
 contest_module = Blueprint('contest', __name__)
@@ -39,7 +40,9 @@ def generate():
     new_id = 1
     if last_contest:
         new_id = last_contest.id + 1
-    contest = Contest('New Year Contest %d' % new_id, 'Contest for HEDSPI Oshougatsu 2015')
+    contest = Contest('New Year Contest %d' % new_id, 'Contest for HUST Oshougatsu 2015')
+
+    Submission.query.delete()
     db.session.add(contest);
     db.session.commit();
     a = random.choice(Problem.query.filter_by(rank=PROBLEM.RANK_EASY, category=PROBLEM.CATEGORY_CODE).all())

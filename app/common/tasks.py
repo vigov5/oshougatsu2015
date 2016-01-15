@@ -57,7 +57,7 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
                     if data['success']:
                         submission.used_time = int(data['time']) - bonus_time
                         submission.used_memory = data['memory']
-                    elif data['reason'] == SUBMISSION.RESULT_WRONG_ANSWER:
+                    if data['reason'] == SUBMISSION.RESULT_WRONG_ANSWER:
                         submission.failed_test_case_result = data['failed_test_case_result']
                     submission.last_passed_test_case = data['last_passed_test_case']
                     submission.result_status = data['reason']
@@ -72,5 +72,5 @@ def run_code(problem_id, submission_id, source_name_with_prefix, target_name, la
         logger.info(e)
         print e
     finally:
-        os.system("rm -rf %s" % temp_path)
+        #os.system("rm -rf %s" % temp_path)
         pass
